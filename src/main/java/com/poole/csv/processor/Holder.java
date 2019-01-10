@@ -6,18 +6,23 @@ import java.lang.reflect.Method;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class HolderField {
+import com.poole.csv.exception.NullableExeception;
+
+public class Holder {
 	private Field field;
 	private Method method;
 	private Function<String, ?> setValue;
+	private boolean isNullable;
 
-	public HolderField(Field field) {
+	public Holder(Field field, boolean isNullable) {
 		this.field = field;
+		this.isNullable = isNullable;
 		setConverter(field.getType());
 	}
 
-	public HolderField(Method method) {
+	public Holder(Method method, boolean isNullable) {
 		this.method = method;
+		this.isNullable = isNullable;
 		setConverter(method.getParameterTypes()[0]);
 
 		method.getParameterTypes()[0].isEnum();
@@ -54,16 +59,33 @@ public class HolderField {
 			this.setValue = (String s) -> Double.valueOf(s);
 		} else if (type == boolean.class || type == Boolean.class) {
 			this.setValue = (String s) -> Boolean.valueOf(s);
-		} else if (type == String.class ) {
-			this.setValue = (String s) ->s;
+		} else if (type == String.class) {
+			this.setValue = (String s) -> s;
 		}
 	}
 
 	public void setValue(Object obj, String value)
 			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		if (field != null)
-			field.set(obj, this.setValue.apply(value));
-		else if (method != null)
-			method.invoke(obj, this.setValue.apply(value));
+
+		if (field != null) {
+			checkNullable(value, "Field: " + field.getName() + " of class "+field.getDeclaringClass().getCanonicalName()+" cannot be null");
+			if (!isNulled(value))
+				field.set(obj, this.setValue.apply(value));
+		} else if (method != null) {
+			checkNullable(value, "Method: " + method.getName() + " of class "+method.getDeclaringClass().getCanonicalName()+" cannot be null");
+			if (!isNulled(value))
+				method.invoke(obj, this.setValue.apply(value));
+		}
+
+	}
+	private void checkNullable(String value,String msg){
+		if (isNulled(value) && !isNullable)
+			throw new NullableExeception(msg);
+	}
+	private boolean isNulled(String value) {
+		if (value == null || value.trim().isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 }

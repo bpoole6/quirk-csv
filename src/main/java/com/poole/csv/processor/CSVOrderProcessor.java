@@ -1,8 +1,10 @@
 package com.poole.csv.processor;
 
 import java.io.FileNotFoundException;
+
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -13,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Map.Entry;
 
 import org.apache.commons.csv.CSVFormat;
@@ -21,92 +25,99 @@ import org.apache.commons.csv.CSVRecord;
 
 import com.poole.csv.annotation.CSVComponent;
 import com.poole.csv.annotation.CSVNumberOrder;
+//TODO Make sure that if they do fields then they have the proper setter that goes along with it
+
 //TODO Add Tests
 //TODO Allow for customer mapper for dataTypes
 //TODO Make the custom mapper be able to be in the field annotation
 //TODO Handle Null use cases
- class CSVOrderProcessor {
-	public <T> List<T> parse(String str, Class<T> clazz) throws FileNotFoundException, IOException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		return parse(str, clazz,CSVFormat.DEFAULT);
+class CSVOrderProcessor {
+	private final static Logger LOGGER = Logger.getLogger(CSVOrderProcessor.class.getName());
+
+	public <T> List<T> parse(Reader reader, Class<T> clazz, CSVFormat format) throws FileNotFoundException, IOException {
+			Map<Integer, Holder> map = getHolders(clazz);
+			return read(reader, map, clazz, format);
 	}
 
-	public <T> List<T> parse(String str, Class<T> clazz, CSVFormat format) throws FileNotFoundException, IOException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Annotation[] ann = clazz.getAnnotations();
-		if (isCSVType(ann)) {
-			Map<Integer, HolderField> map = getHolders(clazz);
-			return read(str, map, clazz,format);
-		} else {
-			throw new RuntimeException();
-		}
-	}
-
-	private <T> List<T> read(String str, Map<Integer, HolderField> map, Class<T> clazz, CSVFormat format)
-			throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
-		CSVParser parser = new CSVParser(new FileReader(str), format);
+	private <T> List<T> read(Reader reader, Map<Integer, Holder> map, Class<T> clazz, CSVFormat format) throws  IOException {
 		List<T> list = new ArrayList<>();
-		for (CSVRecord record : parser) {
-			Object obj = clazz.newInstance();
-			for (Entry<Integer, HolderField> entry : map.entrySet()) {
-				HolderField hf = entry.getValue();
-				int order = entry.getKey();
+		try(CSVParser parser = new CSVParser(reader, format);) {
+			
 
-				hf.setValue(obj, record.get(order));
+			for (CSVRecord record : parser) {
+				Object obj = clazz.newInstance();
+				for (Entry<Integer, Holder> entry : map.entrySet()) {
+					Holder hf = entry.getValue();
+					int order = entry.getKey();
+					
+					try {
+						hf.setValue(obj, record.get(order));
+					} catch (IllegalArgumentException e) {
+						LOGGER.log(Level.SEVERE, "Failed for order#: "+order, e);
+					} catch (InvocationTargetException e) {
+						LOGGER.log(Level.SEVERE, "Failed for order#: "+order, e);
+					}catch(ArrayIndexOutOfBoundsException e){
+						LOGGER.log(Level.WARNING, "Order#: "+order+" exceeds the number of values for the row", e);
+					}catch(IllegalAccessException e){
+						LOGGER.log(Level.WARNING, "Order#: "+order+"Make sure that if you are you have a ", e);
+
+					}
+
+				}
+				list.add((T) obj);
 
 			}
-			list.add((T) obj);
-
-		}
-		parser.close();
+		} catch (InstantiationException |IllegalAccessException e) {
+			LOGGER.log(Level.SEVERE,"Could not create object. Check to make sure the you have a visible default constructor", e);
+		} 
 		return list;
 	}
 
-	private Map<Integer, HolderField> getHolders(Class clazz) {
-		Map<Integer, HolderField> fieldMap = getFields(clazz);
-		Map<Integer, HolderField> methodMap = getMethods(clazz);
-		Map<Integer, HolderField> combined = combinedFieldMethod(fieldMap, methodMap);
+	private Map<Integer, Holder> getHolders(Class clazz) {
+		Map<Integer, Holder> fieldMap = getFields(clazz);
+		Map<Integer, Holder> methodMap = getMethods(clazz);
+		Map<Integer, Holder> combined = combinedFieldMethod(fieldMap, methodMap);
 		return combined;
 	}
 
-	private Map<Integer, HolderField> getFields(Class clazz) {
-		Map<Integer, HolderField> map = new HashMap<>();
+	private Map<Integer, Holder> getFields(Class clazz) {
+		Map<Integer, Holder> map = new HashMap<>();
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field f : fields) {
 			if (f.isAnnotationPresent(CSVNumberOrder.class)) {
 				int order = f.getAnnotation(CSVNumberOrder.class).order();
-				setMapEntry(map, order, new HolderField(f), clazz);
+				boolean isNullable = f.getAnnotation(CSVNumberOrder.class).isNullable();
+				setMapEntry(map, order, new Holder(f, isNullable), clazz);
 			}
 		}
 		return map;
 	}
 
-	private Map<Integer, HolderField> getMethods(Class clazz) {
-		Map<Integer, HolderField> map = new HashMap<>();
+	private Map<Integer, Holder> getMethods(Class clazz) {
+		Map<Integer, Holder> map = new HashMap<>();
 		Method[] methods = clazz.getDeclaredMethods();
 		for (Method m : methods) {
 			if (m.isAnnotationPresent(CSVNumberOrder.class)) {
 				if (m.getParameterCount() != 1)
 					throw new RuntimeException("Setter must only have one parameter:" + m.getName());
 				int order = m.getAnnotation(CSVNumberOrder.class).order();
-				setMapEntry(map, order, new HolderField(m), clazz);
+				boolean isNullable = m.getAnnotation(CSVNumberOrder.class).isNullable();
+				setMapEntry(map, order, new Holder(m, isNullable), clazz);
 
 			}
 		}
 		return map;
 	}
 
-	private void setMapEntry(Map<Integer, HolderField> map, int order, HolderField h, Class clazz) {
+	private void setMapEntry(Map<Integer, Holder> map, int order, Holder h, Class clazz) {
 		if (map.get(order) != null)
 			throw new RuntimeException("Non Unique order number in " + clazz + ". Order#:" + order);
 		map.put(order, h);
 	}
 
-	private Map<Integer, HolderField> combinedFieldMethod(Map<Integer, HolderField> fieldMap,
-			Map<Integer, HolderField> methodMap) {
+	private Map<Integer, Holder> combinedFieldMethod(Map<Integer, Holder> fieldMap, Map<Integer, Holder> methodMap) {
 		Set<Integer> repeats = new HashSet<>();
-		Map<Integer, HolderField> combined = new HashMap<>();
+		Map<Integer, Holder> combined = new HashMap<>();
 		fieldMap.forEach((k, v) -> {
 			repeats.add(k);
 			combined.put(k, v);
@@ -118,14 +129,5 @@ import com.poole.csv.annotation.CSVNumberOrder;
 		});
 
 		return combined;
-	}
-
-	private boolean isCSVType(Annotation[] ann) {
-		for (Annotation a : ann) {
-			if (a.annotationType() == CSVComponent.class) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

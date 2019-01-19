@@ -3,85 +3,90 @@ package com.poole.csv.processor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.Map;
+import java.util.function.Supplier;
 
-import com.poole.csv.exception.NullableExeception;
+import com.poole.csv.exception.MissingWrapperException;
+import com.poole.csv.exception.NullableException;
+import com.poole.csv.wrappers.Wrapper;
 
+/**
+ * Holder has the logic to determine which wrapper to use when processing
+ * datatypes on specific fields and/or methods
+ */
 public class Holder {
 	private Field field;
 	private Method method;
-	private Function<String, ?> setValue;
+	private Wrapper wrapper;
 	private boolean isNullable;
+	@SuppressWarnings("rawtypes")
+	private Class type;
+	private boolean isEnum = false;
 
-	public Holder(Field field, boolean isNullable) {
+	public Holder(Field field, boolean isNullable, Wrapper wrapper) {
 		this.field = field;
 		this.isNullable = isNullable;
-		setConverter(field.getType());
+		this.wrapper = wrapper;
+		this.type = field.getType();
+		if (this.type.isEnum())
+			isEnum = true;
 	}
 
-	public Holder(Method method, boolean isNullable) {
+	public Holder(Method method, boolean isNullable, Wrapper wrapper) {
 		this.method = method;
 		this.isNullable = isNullable;
-		setConverter(method.getParameterTypes()[0]);
-
-		method.getParameterTypes()[0].isEnum();
-
+		this.wrapper = wrapper;
+		this.type = method.getParameterTypes()[0];
+		if (this.type.isEnum())
+			isEnum = true;
 	}
 
-	private void setConverter(Class type) {
-		if (type.isEnum()) {
-			Function<Class, Function<String, ?>> func;
-			func = (Class clazz) -> {
-				return (String value) -> {
-					return Enum.valueOf(clazz, value);
-				};
-			};
-			this.setValue = func.apply(type);
-
-		} else if (type == int.class || type == Integer.class) {
-			this.setValue = (String s) -> Integer.valueOf(s);
-		} else if (type == byte.class || type == Byte.class) {
-			this.setValue = (String s) -> Byte.valueOf(s);
-		} else if (type == char.class || type == Character.class) {
-			this.setValue = (String s) -> {
-				if (s.length() != 1)
-					throw new RuntimeException("Conversion of string " + s + " to char failed");
-				return Character.valueOf(s.charAt(0));
-			};
-		} else if (type == short.class || type == Short.class) {
-			this.setValue = (String s) -> Short.valueOf(s);
-		} else if (type == long.class || type == Long.class) {
-			this.setValue = (String s) -> Long.valueOf(s);
-		} else if (type == float.class || type == Float.class) {
-			this.setValue = (String s) -> Float.valueOf(s);
-		} else if (type == double.class || type == Double.class) {
-			this.setValue = (String s) -> Double.valueOf(s);
-		} else if (type == boolean.class || type == Boolean.class) {
-			this.setValue = (String s) -> Boolean.valueOf(s);
-		} else if (type == String.class) {
-			this.setValue = (String s) -> s;
-		}
-	}
-
-	public void setValue(Object obj, String value)
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void setValue(Object obj, String value, Map<Class, Wrapper> setValueMap)
 			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+		Supplier<?> setValue = null;
+
+		if (this.wrapper != null) {
+			setValue = () -> {
+				return this.wrapper.apply(value);
+			};
+		} else if (setValueMap.get(type) != null) {
+			setValue = () -> {
+				return setValueMap.get(type).apply(value);
+			};
+		} else if (setValueMap.get(type) == null && isEnum) {
+			setValue = () -> {
+				return Enum.valueOf(this.type, value);
+			};
+		} else {
+			throw new MissingWrapperException("Do not have a wrapper class to handle Type" + type);
+		}
 
 		if (field != null) {
-			checkNullable(value, "Field: " + field.getName() + " of class "+field.getDeclaringClass().getCanonicalName()+" cannot be null");
+			field.setAccessible(true);
+			checkNullable(value, "Field: " + field.getName() + " of class "
+					+ field.getDeclaringClass().getCanonicalName() + " cannot be null");
 			if (!isNulled(value))
-				field.set(obj, this.setValue.apply(value));
+				field.set(obj, setValue.get());
 		} else if (method != null) {
-			checkNullable(value, "Method: " + method.getName() + " of class "+method.getDeclaringClass().getCanonicalName()+" cannot be null");
+			checkNullable(value, "Method: " + method.getName() + " of class "
+					+ method.getDeclaringClass().getCanonicalName() + " cannot be null");
+			method.setAccessible(true);
 			if (!isNulled(value))
-				method.invoke(obj, this.setValue.apply(value));
+				method.invoke(obj, setValue.get());
 		}
 
 	}
-	private void checkNullable(String value,String msg){
-		if (isNulled(value) && !isNullable)
-			throw new NullableExeception(msg);
+
+	public interface Function<T, R> {
+		R apply(T t) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
 	}
+
+	private void checkNullable(String value, String msg) {
+		if (isNulled(value) && !isNullable)
+			throw new NullableException(msg);
+	}
+
 	private boolean isNulled(String value) {
 		if (value == null || value.trim().isEmpty()) {
 			return true;

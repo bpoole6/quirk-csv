@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+          "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+          "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<module name="Checker">
+	<property name="localeLanguage" value="en" />
+
+	<!-- Checks whether files end with a new line. -->
+	<!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
+	<module name="NewlineAtEndOfFile" />
+
+	
+
+	<!-- Checks for white space at the end of the line -->
+	<!-- See http://checkstyle.sourceforge.net/config_regexp.html -->
+	<module name="RegexpSingleline">
+		<property name="format" value="\s+$" />
+		<property name="message" value="Line has trailing spaces." />
+		<property name="fileExtensions" value="java" />
+	</module>
+
+
+	<module name="TreeWalker">
+		<property name="cacheFile" value="target/cachefile" />
+		<property name="tabWidth " value="4"/>
+		<module name="OperatorWrap">
+			<property name="option" value="nl" />
+		</module>
+		<module name="LineLength">
+			<property name="max" value="120" />
+		</module>
+	</module>
+
+</module>

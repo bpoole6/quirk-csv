@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
 public @interface CSVComponent {
 
 	CSVReaderType type();
+
+	boolean inheritSuper() default false;
 }

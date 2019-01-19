@@ -3,40 +3,42 @@ package com.poole.csv.processor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 
 import com.poole.csv.annotation.CSVComponent;
 import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.exception.MissingCSVComponent;
+import com.poole.csv.wrappers.Wrapper;
 
-//TODO Fix Exeception handling
+/**
+ * Acts as a further layer of abstraction to determine which processor to use
+ */
+@SuppressWarnings("rawtypes")
 public class CSVProcessor {
-	public <T> List<T> parse(Reader reader, Class<T> clazz) throws FileNotFoundException, IOException {
-		return parse(reader, clazz, CSVFormat.DEFAULT);
+
+	public <T> List<T> parse(Reader reader, Class<T> clazz) throws IOException {
+		return parse(reader, clazz, CSVFormat.DEFAULT, new HashMap<>());
 	}
 
-	public <T> List<T> parse(Reader reader, Class<T> clazz, CSVFormat format)
+	public <T> List<T> parse(Reader reader, Class<T> clazz, CSVFormat format, Map<Class, Wrapper> wrapperMap)
 			throws FileNotFoundException, IOException {
 		try {
-			Annotation[] ann = clazz.getAnnotations();
-			Annotation a = isCSVType(ann);
+			CSVComponent component = clazz.getAnnotation(CSVComponent.class);
 
-			if (a != null) {
+			if (component != null) {
 				if (clazz.getAnnotation(CSVComponent.class).type() == CSVReaderType.ORDER) {
-					return new CSVOrderProcessor().parse(reader, clazz, format);
+					return new CSVOrderProcessor().parse(reader, clazz, format, wrapperMap);
 				} else {
 					format = format.withFirstRecordAsHeader();
-					return new CSVNamedProcessor().parse(reader, clazz, format);// TODO
-																				// add
-																				// by
-																				// column
-																				// header
+					return new CSVNamedProcessor().parse(reader, clazz, format, wrapperMap);
 				}
 
 			} else {
-				throw new RuntimeException();
+				throw new MissingCSVComponent("Missing " + CSVComponent.class + " annotation");
 			}
 		} finally {
 			try {
@@ -46,14 +48,5 @@ public class CSVProcessor {
 
 			}
 		}
-	}
-
-	private Annotation isCSVType(Annotation[] ann) {
-		for (Annotation a : ann) {
-			if (a.annotationType() == CSVComponent.class) {
-				return a;
-			}
-		}
-		return null;
 	}
 }

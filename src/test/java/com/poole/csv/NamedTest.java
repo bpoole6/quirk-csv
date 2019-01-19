@@ -18,7 +18,7 @@ import com.poole.csv.annotation.CSVReaderType;
 import com.poole.csv.exception.UninstantiableException;
 import com.poole.csv.processor.CSVProcessor;
 
-public class OrderTest {
+public class NamedTest {
 	// Test when a record goes out of bounds
 	// Test when a non-nullable is null
 	// Test to make sure a nullable can be nulled
@@ -46,10 +46,10 @@ public class OrderTest {
 	}
 
 	@Test()
-	public void outOfBoundsNumberFormatExTest() throws IOException {
+	public void NumberFormatExTest() throws IOException {
 
 		CSVProcessor p = new CSVProcessor();
-		List<O1> o1s = p.parse(new StringReader("a,j"), O1.class);
+		List<O1> o1s = p.parse(new StringReader("a,b,c" + System.lineSeparator() + "a,j,u"), O1.class);
 		System.out.println(errContent.toString());
 		O1 o1 = new O1();
 		o1.s = "a";
@@ -61,20 +61,20 @@ public class OrderTest {
 	public void UninstantiableExTest() throws IOException {
 
 		CSVProcessor p = new CSVProcessor();
-		List<O2> o1 = p.parse(new StringReader("a,j"), O2.class);
+		List<O2> o1 = p.parse(new StringReader("a,b,c" + System.lineSeparator() + "a,j,u"), O2.class);
 
 	}
 
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVComponent(type = CSVReaderType.NAMED)
 	public static class O1 {
 
-		@CSVColumn(order = 0)
+		@CSVColumn(header = "a")
 		String s;
-		@CSVColumn(order = 3)
+		@CSVColumn(header = "bb")
 		int i;
 		int j;
 
-		@CSVColumn(order = 1)
+		@CSVColumn(header = "c")
 		public void setJ(int j) {
 			this.j = j;
 		}
@@ -112,19 +112,14 @@ public class OrderTest {
 
 	}
 
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVComponent(type = CSVReaderType.NAMED)
 	private static class O2 {
-		@CSVColumn(order = 0)
+
+		@CSVColumn(header = "a")
 		String s;
-		@CSVColumn(order = 1, isNullable = false)
-		Integer i;
+		@CSVColumn(header = "bb")
+		int i;
+
 	}
 
-	@CSVComponent(type = CSVReaderType.ORDER)
-	private static class O3 {
-		@CSVColumn(order = 0)
-		String s;
-		@CSVColumn(order = 1, isNullable = false)
-		Integer i;
-	}
 }

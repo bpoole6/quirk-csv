@@ -70,8 +70,8 @@ public abstract class AbstractCSVProcessor {
 				String header = f.getAnnotation(CSVColumn.class).header();
 				boolean isNullable = f.getAnnotation(CSVColumn.class).isNullable();
 				Wrapper wrapper = getWrapper(f.getAnnotation(CSVColumn.class).wrapper());
-				CSVAnnotationManager manager = new CSVAnnotationManager(order, header, isNullable,
-						new Holder(f, isNullable, wrapper), clazz, null);
+				CSVAnnotationManager manager = new CSVAnnotationManager(order, header,
+						new Holder(f, isNullable, wrapper), clazz);
 
 				list.add(manager);
 			}
@@ -89,8 +89,8 @@ public abstract class AbstractCSVProcessor {
 				String header = m.getAnnotation(CSVColumn.class).header();
 				boolean isNullable = m.getAnnotation(CSVColumn.class).isNullable();
 				Wrapper wrapper = getWrapper(m.getAnnotation(CSVColumn.class).wrapper());
-				CSVAnnotationManager manager = new CSVAnnotationManager(order, header, isNullable,
-						new Holder(m, isNullable, wrapper), clazz, null);
+				CSVAnnotationManager manager = new CSVAnnotationManager(order, header,
+						new Holder(m, isNullable, wrapper), clazz);
 				list.add(manager);
 			}
 		}

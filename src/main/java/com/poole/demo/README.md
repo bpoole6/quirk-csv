@@ -1,9 +1,0 @@
-# DEMOS
-
-## ORDER
-
-## NAMED
-
-## INHERITANCE
-
-## WRAPPER

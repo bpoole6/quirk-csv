@@ -44,7 +44,7 @@ public class Holder {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void setValue(Object obj, String value, Map<Class, Wrapper> setValueMap)
 			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		Supplier<?> setValue = null;
+		Supplier<Object> setValue = null;
 
 		if (this.wrapper != null) {
 			setValue = () -> {

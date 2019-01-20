@@ -15,42 +15,18 @@ import org.junit.Test;
 import com.poole.csv.annotation.CSVColumn;
 import com.poole.csv.annotation.CSVComponent;
 import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.exception.NamedParserException;
 import com.poole.csv.exception.UninstantiableException;
 import com.poole.csv.processor.CSVProcessor;
 
 public class NamedTest {
-	// Test when a record goes out of bounds
-	// Test when a non-nullable is null
-	// Test to make sure a nullable can be nulled
-	// Test when two fields hold the same order
-	// Test when two methods hold the same order
-	// Test when a field and a method hold the same order
-	// Test when a complex datatype is used instead of primitives and their
-	// wrappers
-	//
-	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-	private final PrintStream originalOut = System.out;
-	private final PrintStream originalErr = System.err;
-
-	@Before
-	public void setUpStreams() {
-		System.setOut(new PrintStream(outContent));
-		System.setErr(new PrintStream(errContent));
-	}
-
-	@After
-	public void restoreStreams() {
-		System.setOut(originalOut);
-		System.setErr(originalErr);
-	}
+	
 
 	@Test()
 	public void NumberFormatExTest() throws IOException {
 
 		CSVProcessor p = new CSVProcessor();
 		List<O1> o1s = p.parse(new StringReader("a,b,c" + System.lineSeparator() + "a,j,u"), O1.class);
-		System.out.println(errContent.toString());
 		O1 o1 = new O1();
 		o1.s = "a";
 		o1.j = 0;
@@ -62,6 +38,13 @@ public class NamedTest {
 
 		CSVProcessor p = new CSVProcessor();
 		List<O2> o1 = p.parse(new StringReader("a,b,c" + System.lineSeparator() + "a,j,u"), O2.class);
+
+	}
+	@Test(expected = NamedParserException.class)
+	public void NamedParserExceptionTest() throws IOException {
+
+		CSVProcessor p = new CSVProcessor();
+		 p.parse(new StringReader("a,b,c" + System.lineSeparator() + "a,j,u"), O3.class);
 
 	}
 
@@ -121,5 +104,13 @@ public class NamedTest {
 		int i;
 
 	}
+	@CSVComponent(type = CSVReaderType.NAMED)
+	private static class O3 {
 
+		@CSVColumn(header = "a")
+		String s;
+		@CSVColumn(header = "a")
+		int i;
+
+	}
 }

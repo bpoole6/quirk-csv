@@ -22,7 +22,7 @@ public class WrapperTest {
 
 	@Test
 	public void inlineWrapperTest() throws IOException {
-		final String str = "date" + System.lineSeparator() + "19900511";
+		final String str = "date,dob" + System.lineSeparator() + "19900511,19900511";
 		CSVProcessor processor = new CSVProcessor();
 		W1 w1 = processor.parse(new StringReader(str), W1.class).get(0);
 		assertTrue(w1.date.equals(LocalDate.of(1990, 05, 11)));
@@ -57,6 +57,8 @@ public class WrapperTest {
 	public static class W1 {
 
 		LocalDate date;
+		@CSVColumn(header = "dob", wrapper = LocalDateWrapper.class)
+		LocalDate dob;
 
 		@CSVColumn(header = "date", wrapper = LocalDateWrapper.class)
 		public void setDate(LocalDate date) {

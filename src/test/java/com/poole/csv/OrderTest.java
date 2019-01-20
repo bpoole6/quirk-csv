@@ -15,45 +15,20 @@ import org.junit.Test;
 import com.poole.csv.annotation.CSVColumn;
 import com.poole.csv.annotation.CSVComponent;
 import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.exception.OrderParserException;
 import com.poole.csv.exception.UninstantiableException;
 import com.poole.csv.processor.CSVProcessor;
 
 public class OrderTest {
-	// Test when a record goes out of bounds
-	// Test when a non-nullable is null
-	// Test to make sure a nullable can be nulled
-	// Test when two fields hold the same order
-	// Test when two methods hold the same order
-	// Test when a field and a method hold the same order
-	// Test when a complex datatype is used instead of primitives and their
-	// wrappers
-	//
-	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-	private final PrintStream originalOut = System.out;
-	private final PrintStream originalErr = System.err;
-
-	@Before
-	public void setUpStreams() {
-		System.setOut(new PrintStream(outContent));
-		System.setErr(new PrintStream(errContent));
-	}
-
-	@After
-	public void restoreStreams() {
-		System.setOut(originalOut);
-		System.setErr(originalErr);
-	}
 
 	@Test()
 	public void outOfBoundsNumberFormatExTest() throws IOException {
-
 		CSVProcessor p = new CSVProcessor();
-		List<O1> o1s = p.parse(new StringReader("a,j"), O1.class);
-		System.out.println(errContent.toString());
+		List<O1> o1s = p.parse(new StringReader("a,j,NAMED,dd"), O1.class);
 		O1 o1 = new O1();
 		o1.s = "a";
 		o1.j = 0;
+		o1.type=CSVReaderType.NAMED;
 		assertTrue(o1.equals(o1s.get(0)));
 	}
 
@@ -61,34 +36,44 @@ public class OrderTest {
 	public void UninstantiableExTest() throws IOException {
 
 		CSVProcessor p = new CSVProcessor();
-		List<O2> o1 = p.parse(new StringReader("a,j"), O2.class);
+		List<O2> o1 = p.parse(new StringReader("a,j,NAMED"), O2.class);
 
 	}
+	@Test(expected = OrderParserException.class)
+	public void repeatedOrderTest() throws IOException {
 
+		CSVProcessor p = new CSVProcessor();
+		p.parse(new StringReader("a,j,NAMED"), O4.class);
+
+	}
 	@CSVComponent(type = CSVReaderType.ORDER)
 	public static class O1 {
 
+		
 		@CSVColumn(order = 0)
 		String s;
-		@CSVColumn(order = 3)
+		@CSVColumn(order = 4)
 		int i;
 		int j;
-
+		@CSVColumn(order=2)
+		CSVReaderType type;
+		@CSVColumn(order=3)
+		char c;
 		@CSVColumn(order = 1)
 		public void setJ(int j) {
 			this.j = j;
 		}
-
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
+			result = prime * result + c;
 			result = prime * result + i;
 			result = prime * result + j;
 			result = prime * result + ((s == null) ? 0 : s.hashCode());
+			result = prime * result + ((type == null) ? 0 : type.hashCode());
 			return result;
 		}
-
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -98,6 +83,8 @@ public class OrderTest {
 			if (getClass() != obj.getClass())
 				return false;
 			O1 other = (O1) obj;
+			if (c != other.c)
+				return false;
 			if (i != other.i)
 				return false;
 			if (j != other.j)
@@ -107,8 +94,13 @@ public class OrderTest {
 					return false;
 			} else if (!s.equals(other.s))
 				return false;
+			if (type != other.type)
+				return false;
 			return true;
 		}
+		
+
+		
 
 	}
 
@@ -125,6 +117,13 @@ public class OrderTest {
 		@CSVColumn(order = 0)
 		String s;
 		@CSVColumn(order = 1, isNullable = false)
+		Integer i;
+	}
+	@CSVComponent(type = CSVReaderType.ORDER)
+	private static class O4 {
+		@CSVColumn(order = 0)
+		String s;
+		@CSVColumn(order = 0)
 		Integer i;
 	}
 }

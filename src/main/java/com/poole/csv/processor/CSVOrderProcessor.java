@@ -51,10 +51,7 @@ class CSVOrderProcessor extends AbstractCSVProcessor {
 						LOGGER.log(Level.SEVERE, "Failed for order#: " + order, e);
 					} catch (ArrayIndexOutOfBoundsException e) {
 						LOGGER.log(Level.WARNING, "Order#: " + order + " exceeds the number of values for the row", e);
-					} catch (IllegalAccessException e) {
-						LOGGER.log(Level.WARNING, "Order#: " + order + "Make sure that if you are you have a ", e);
-
-					}
+					} 
 
 				}
 				items.add((T) obj);

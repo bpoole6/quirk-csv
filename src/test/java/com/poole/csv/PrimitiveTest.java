@@ -13,7 +13,7 @@ import com.poole.csv.annotation.CSVComponent;
 import com.poole.csv.annotation.CSVReaderType;
 import com.poole.csv.processor.CSVProcessor;
 
-public class PrimitiveTests {
+public class PrimitiveTest {
 
 	@Test
 	public void primitiveTest() throws IOException {
@@ -79,8 +79,12 @@ public class PrimitiveTests {
 		boolean booleanS;
 		@CSVColumn(order = 16)
 		String stringW;
-		@CSVColumn(order = 17)
 		CSVReaderType type;
+
+		@CSVColumn(order = 17)
+		public void setType(CSVReaderType type) {
+			this.type = type;
+		}
 
 		@Override
 		public int hashCode() {

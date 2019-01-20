@@ -46,11 +46,9 @@ class CSVNamedProcessor extends AbstractCSVProcessor {
 					String header = entry.getKey();
 					try {
 						hf.setValue(obj, record.get(header), setValueMap);
-					} catch (IllegalArgumentException e) {
+					} catch (IllegalArgumentException | InvocationTargetException e) {
 						LOGGER.log(Level.SEVERE, "Failed for header: " + header, e);
-					} catch (InvocationTargetException e) {
-						LOGGER.log(Level.SEVERE, "Failed for header: " + header, e);
-					}
+					} 
 
 				}
 				items.add((T) obj);

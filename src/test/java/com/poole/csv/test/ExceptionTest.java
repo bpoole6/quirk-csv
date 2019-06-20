@@ -1,4 +1,4 @@
-package com.poole.csv;
+package com.poole.csv.test;
 
 import org.junit.Test;
 

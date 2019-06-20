@@ -1,4 +1,4 @@
-package com.poole.csv;
+package com.poole.csv.test;
 
 import static org.junit.Assert.assertTrue;
 

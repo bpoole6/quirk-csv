@@ -33,7 +33,7 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for java.lang.Integer and int
+	 * Default Wrapper for @java.lang.Integer and int
 	 *
 	 */
 	public static class IntDefault implements Wrapper {
@@ -45,7 +45,7 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for java.lang.Byte and byte
+	 * Default Wrapper for @java.lang.Byte and byte
 	 *
 	 */
 	public static class ByteDefault implements Wrapper {
@@ -57,7 +57,7 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for java.lang.Character and char
+	 * Default Wrapper for @java.lang.Character and char
 	 *
 	 */
 	public static class CharDefault implements Wrapper {
@@ -71,7 +71,7 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for java.lang.Short and short
+	 * Default Wrapper for @java.lang.Short and short
 	 *
 	 */
 	public static class ShortDefault implements Wrapper {
@@ -83,7 +83,7 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for java.lang.Long and long
+	 * Default Wrapper for @java.lang.Long and long
 	 *
 	 */
 	public static class LongDefault implements Wrapper {
@@ -95,7 +95,7 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for java.lang.Float and float
+	 * Default Wrapper for @java.lang.Float and float
 	 *
 	 */
 	public static class FloatDefault implements Wrapper {
@@ -107,7 +107,7 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for java.lang.Double and double
+	 * Default Wrapper for @java.lang.Double and double
 	 *
 	 */
 	public static class DoubleDefault implements Wrapper {
@@ -119,7 +119,7 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for java.lang.Boolean and boolean
+	 * Default Wrapper for @java.lang.Boolean and boolean
 	 *
 	 */
 	public static class BooleanDefault implements Wrapper {
@@ -131,7 +131,7 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for java.lang.String and string Doing alot here
+	 * Default Wrapper for @java.lang.String and string Doing alot here
 	 */
 	public static class StringDefault implements Wrapper {
 

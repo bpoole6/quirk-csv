@@ -44,10 +44,6 @@ public abstract class AbstractCSVProcessor<T> {
 		csvAnnotationManagers.addAll(getHolders(classes));
 	}
 
-	public <T> void parse(Class<T> parsedClazz, CSVFormat format,
-								   Map<Class, Wrapper> wrapperMap) throws FileNotFoundException, IOException {
-
-	}
 	private Map<Class, Wrapper> getWrapperMethodMap(Map<Class, Wrapper> wrapperMap) {
 		Map<Class, Wrapper> map = new HashMap<>(DefaultWrappers.getDefault());
 		if (wrapperMap != null) {

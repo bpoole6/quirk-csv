@@ -23,24 +23,18 @@ import com.poole.csv.wrappers.Wrapper;
  * Does the processing for CSVComponent whose type uses NAMED
  */
 @SuppressWarnings("rawtypes")
-class CSVNamedProcessor extends AbstractCSVProcessor {
+class CSVNamedProcessor<T> extends AbstractCSVProcessor<T> {
 
 	private final static Logger LOGGER = Logger.getLogger(CSVNamedProcessor.class.getName());
 
-	@Override
-	protected List read(Reader reader2, List list, Class parsedClazz2, CSVFormat format2, Map setValueMap) throws IOException {
-		return null;
+	public CSVNamedProcessor(Class<T> parsedClazz,
+							 Map<Class, Wrapper> wrapperMap){
+		super(parsedClazz,wrapperMap);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected <T> List<T> read(Reader reader, List<CSVAnnotationManager> list, Class parsedClazz, CSVFormat format,
-			Map<Class, Wrapper> setValueMap) throws IOException {
+	protected List<T> read(Reader reader, CSVFormat format) throws IOException {
 		List<T> items = new ArrayList<>();
-		Map<String, Holder> map = getMapFromManager(list);
-		if (getErrors().size() > 0) {
-			throw new NamedParserException(getErrors().toString());
-		}
+		Map<String, Holder> map = getMapFromManager(this.csvAnnotationManagers);
 		try (CSVParser parser = new CSVParser(reader, format);) {
 
 			for (CSVRecord record : parser) {
@@ -70,16 +64,19 @@ class CSVNamedProcessor extends AbstractCSVProcessor {
 
 	private Map<String, Holder> getMapFromManager(List<CSVAnnotationManager> list) {
 		Map<String, Holder> map = new HashMap<>();
+		List<String> errors= new ArrayList<>();
 		for (CSVAnnotationManager man : list) {
 			Holder holder = map.get(man.getHeader());
 			if (holder != null)
-				getErrors().add("Non Unique Header in " + man.getParsedClazz() + ".Header :" + man.getParsedClazz());
+				errors.add("Non Unique Header in " + man.getParsedClazz() + ".Header :" + man.getParsedClazz());
 			else {
 				map.put(man.getHeader(), man.getHolder());
 			}
 		}
+		if (errors.size() > 0) {
+			throw new NamedParserException(errors.toString());
+		}
 		return map;
 	}
-
 
 }

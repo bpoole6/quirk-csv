@@ -34,7 +34,7 @@ public class CSVProcessor<T> {
 
 			if (component != null) {
 				if (clazz.getAnnotation(CSVComponent.class).type() == CSVReaderType.ORDER) {
-					return new CSVOrderProcessor().parse(reader, clazz, format, wrapperMap);
+					return new CSVOrderProcessor(clazz, wrapperMap).parse(reader, clazz, format, wrapperMap);
 				} else {
 					format = format.withFirstRecordAsHeader();
 					return new CSVNamedProcessor().parse(reader, clazz, format, wrapperMap);

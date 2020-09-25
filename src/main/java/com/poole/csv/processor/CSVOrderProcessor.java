@@ -23,19 +23,19 @@ import com.poole.csv.wrappers.Wrapper;
  * Does the processing for CSVComponent whose type uses ORDER
  */
 @SuppressWarnings("rawtypes")
-class CSVOrderProcessor extends AbstractCSVProcessor {
+class CSVOrderProcessor<T> extends AbstractCSVProcessor {
 
 	private final static Logger LOGGER = Logger.getLogger(CSVOrderProcessor.class.getName());
-
+	public CSVOrderProcessor(Class<T> parsedClazz,
+							 Map<Class, Wrapper> wrapperMap){
+		super(parsedClazz,wrapperMap);
+	}
 	@SuppressWarnings("unchecked")
 	@Override
-	protected <T> List<T> read(Reader reader, List<CSVAnnotationManager> list, Class parsedClazz, CSVFormat format,
-			Map<Class, Wrapper> setValueMap) throws IOException {
+	protected List<T> read(Reader reader, CSVFormat format) throws IOException {
 		List<T> items = new ArrayList<>();
-		Map<Integer, Holder> map = getMapFromManager(list);
-		if (getErrors().size() > 0) {
-			throw new OrderParserException(getErrors().toString());
-		}
+		Map<Integer, Holder> map = getMapFromManager(this.csvAnnotationManagers);
+
 		try (CSVParser parser = new CSVParser(reader, format);) {
 			for (CSVRecord record : parser) {
 				Object obj = parsedClazz.newInstance();
@@ -68,13 +68,17 @@ class CSVOrderProcessor extends AbstractCSVProcessor {
 
 	private Map<Integer, Holder> getMapFromManager(List<CSVAnnotationManager> list) {
 		Map<Integer, Holder> map = new HashMap<>();
+		List<String> errors = new ArrayList<>();
 		for (CSVAnnotationManager man : list) {
 			Holder holder = map.get(man.getOrder());
 			if (holder != null)
-				getErrors().add("Non Unique Order# in " + man.getParsedClazz() + ".Order# :" + man.getOrder());
+				errors.add("Non Unique Order# in " + man.getParsedClazz() + ".Order# :" + man.getOrder());
 			else {
 				map.put(man.getOrder(), man.getHolder());
 			}
+		}
+		if (errors.size() > 0) {
+			throw new OrderParserException(errors.toString());
 		}
 		return map;
 	}

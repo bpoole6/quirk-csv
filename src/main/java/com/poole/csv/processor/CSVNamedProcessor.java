@@ -27,6 +27,11 @@ class CSVNamedProcessor extends AbstractCSVProcessor {
 
 	private final static Logger LOGGER = Logger.getLogger(CSVNamedProcessor.class.getName());
 
+	@Override
+	protected List read(Reader reader2, List list, Class parsedClazz2, CSVFormat format2, Map setValueMap) throws IOException {
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected <T> List<T> read(Reader reader, List<CSVAnnotationManager> list, Class parsedClazz, CSVFormat format,
@@ -75,5 +80,6 @@ class CSVNamedProcessor extends AbstractCSVProcessor {
 		}
 		return map;
 	}
+
 
 }

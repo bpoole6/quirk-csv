@@ -18,8 +18,11 @@ import com.poole.csv.wrappers.Wrapper;
  * Acts as a further layer of abstraction to determine which processor to use
  */
 @SuppressWarnings("rawtypes")
-public class CSVProcessor {
+public class CSVProcessor<T> {
 
+	public CSVProcessor(Class<T> clazz,Map<Class, Wrapper> wrapperMap){
+
+	}
 	public <T> List<T> parse(Reader reader, Class<T> clazz) throws IOException {
 		return parse(reader, clazz, CSVFormat.DEFAULT, new HashMap<>());
 	}

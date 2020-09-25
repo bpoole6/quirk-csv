@@ -26,21 +26,28 @@ import com.poole.csv.wrappers.defaults.DefaultWrappers;
  *
  */
 @SuppressWarnings("rawtypes")
-public abstract class AbstractCSVProcessor {
-	Map<Class<Wrapper>, Wrapper> wrapperInstantiated;
+public abstract class AbstractCSVProcessor<T> {
+	protected final Map<Class<Wrapper>, Wrapper> wrapperInstantiated = new HashMap<>();
+	protected final Map<Class, Wrapper> setValueMap = new HashMap<>();
+	protected final List<CSVAnnotationManager> csvAnnotationManagers = new ArrayList<>();
+	protected final Class<T> parsedClazz;
 	private final static Logger LOGGER = Logger.getLogger(AbstractCSVProcessor.class.getName());
 
 	private List<String> errors;
 
-	public final <T> List<T> parse(Reader reader, Class<T> parsedClazz, CSVFormat format,
-			Map<Class, Wrapper> wrapperMap) throws FileNotFoundException, IOException {
+	public AbstractCSVProcessor(Class<T> parsedClazz,
+								Map<Class, Wrapper> wrapperMap){
+		this.parsedClazz = parsedClazz;
 		List<Class> classes = new ArrayList<>();
-		Map<Class, Wrapper> setValueMap = getWrapperMethodMap(wrapperMap);
+		setValueMap.putAll(getWrapperMethodMap(wrapperMap));
 		getClasses(parsedClazz, classes);
-		List<CSVAnnotationManager> list = getHolders(classes);
-		return read(reader, list, parsedClazz, format, setValueMap);
+		csvAnnotationManagers.addAll(getHolders(classes));
 	}
 
+	public <T> void parse(Class<T> parsedClazz, CSVFormat format,
+								   Map<Class, Wrapper> wrapperMap) throws FileNotFoundException, IOException {
+
+	}
 	private Map<Class, Wrapper> getWrapperMethodMap(Map<Class, Wrapper> wrapperMap) {
 		Map<Class, Wrapper> map = new HashMap<>(DefaultWrappers.getDefault());
 		if (wrapperMap != null) {
@@ -49,8 +56,8 @@ public abstract class AbstractCSVProcessor {
 		return map;
 	}
 
-	protected abstract <T> List<T> read(Reader reader2, List<CSVAnnotationManager> list, Class parsedClazz2,
-			CSVFormat format2, Map<Class, Wrapper> setValueMap) throws IOException;
+	protected abstract <T> List<T> read(Reader reader,
+			CSVFormat format) throws IOException;
 
 	private List<CSVAnnotationManager> getHolders(List<Class> classes) {
 		List<CSVAnnotationManager> combined = new ArrayList<>();
@@ -101,11 +108,11 @@ public abstract class AbstractCSVProcessor {
 	private Wrapper getWrapper(Class<? extends Wrapper> wrapper) {
 		if (wrapper == null || wrapper == Wrapper.class)
 			return null;
-		Wrapper wrap = getWrapperInstantiated().get(wrapper);
+		Wrapper wrap =this.wrapperInstantiated.get(wrapper);
 		if (wrap == null) {
 			try {
 				wrap = wrapper.newInstance();
-				getWrapperInstantiated().put((Class<Wrapper>) wrapper, wrap);
+				this.wrapperInstantiated.put((Class<Wrapper>) wrapper, wrap);
 
 				return wrap;
 			} catch (InstantiationException | IllegalAccessException e) {
@@ -130,17 +137,4 @@ public abstract class AbstractCSVProcessor {
 		if (m.getParameterCount() != 1)
 			throw new MethodParameterException("Setter must only have one parameter:" + m.getName());
 	}
-
-	protected List<String> getErrors() {
-		if (this.errors == null)
-			this.errors = new ArrayList<>();
-		return this.errors;
-	}
-
-	protected Map<Class<Wrapper>, Wrapper> getWrapperInstantiated() {
-		if (this.wrapperInstantiated == null)
-			this.wrapperInstantiated = new HashMap<>();
-		return wrapperInstantiated;
-	}
-
 }

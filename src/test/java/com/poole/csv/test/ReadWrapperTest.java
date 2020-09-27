@@ -9,32 +9,32 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.poole.csv.wrappers.read.ReadWrapper;
 import org.apache.commons.csv.CSVFormat;
 import org.junit.Test;
 
-import com.poole.csv.annotation.CSVColumn;
-import com.poole.csv.annotation.CSVComponent;
+import com.poole.csv.annotation.CSVReadColumn;
+import com.poole.csv.annotation.CSVReadComponent;
 import com.poole.csv.annotation.CSVReaderType;
 import com.poole.csv.processor.CSVProcessor;
-import com.poole.csv.wrappers.Wrapper;
 
-public class WrapperTest {
+public class ReadWrapperTest {
 
 	@Test
 	public void inlineWrapperTest() throws IOException {
 		final String str = "date,dob" + System.lineSeparator() + "19900511,19900511";
-		CSVProcessor processor = new CSVProcessor();
-		W1 w1 = processor.parse(new StringReader(str), W1.class).get(0);
+		CSVProcessor<W1> processor = new CSVProcessor<>(W1.class);
+		W1 w1 = processor.parse(new StringReader(str)).get(0);
 		assertTrue(w1.date.equals(LocalDate.of(1990, 05, 11)));
 	}
 
 	@Test
 	public void globalWrapperTest() throws IOException {
 		final String str = "date" + System.lineSeparator() + "19900511";
-		CSVProcessor processor = new CSVProcessor();
-		Map<Class, Wrapper> m = new HashMap<>();
-		m.put(LocalDate.class, new LocalDateWrapper());
-		W2 w2 = processor.parse(new StringReader(str), W2.class, CSVFormat.DEFAULT, m).get(0);
+		Map<Class, ReadWrapper> m = new HashMap<>();
+		m.put(LocalDate.class, new LocalDateReadWrapper());
+		CSVProcessor<W2> processor = new CSVProcessor<>(W2.class, m);
+		W2 w2 = processor.parse(new StringReader(str), CSVFormat.DEFAULT).get(0);
 		assertTrue(w2.date.equals(LocalDate.of(1990, 05, 11)));
 	}
 
@@ -46,49 +46,49 @@ public class WrapperTest {
 	@Test
 	public void inlineOverGlobalTest() throws IOException {
 		final String str = "date" + System.lineSeparator() + "19900511";
-		CSVProcessor processor = new CSVProcessor();
-		Map<Class, Wrapper> m = new HashMap<>();
-		m.put(LocalDate.class, new LocalDateWrapperFail());
-		W3 w3 = processor.parse(new StringReader(str), W3.class, CSVFormat.DEFAULT, m).get(0);
+		Map<Class, ReadWrapper> m = new HashMap<>();
+		m.put(LocalDate.class, new LocalDateReadWrapperFail());
+		CSVProcessor<W3> processor = new CSVProcessor<>(W3.class,m);
+		W3 w3 = processor.parse(new StringReader(str), CSVFormat.DEFAULT).get(0);
 		assertTrue(w3.date.equals(LocalDate.of(1990, 05, 11)));
 	}
 
-	@CSVComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVReaderType.NAMED)
 	public static class W1 {
 
 		LocalDate date;
-		@CSVColumn(header = "dob", wrapper = LocalDateWrapper.class)
+		@CSVReadColumn(header = "dob", wrapper = LocalDateReadWrapper.class)
 		LocalDate dob;
 
-		@CSVColumn(header = "date", wrapper = LocalDateWrapper.class)
+		@CSVReadColumn(header = "date", wrapper = LocalDateReadWrapper.class)
 		public void setDate(LocalDate date) {
 			this.date = date;
 		}
 	}
 
-	@CSVComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVReaderType.NAMED)
 	public static class W2 {
 
 		LocalDate date;
 
-		@CSVColumn(header = "date")
+		@CSVReadColumn(header = "date")
 		public void setDate(LocalDate date) {
 			this.date = date;
 		}
 	}
 
-	@CSVComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVReaderType.NAMED)
 	public static class W3 {
 
 		LocalDate date;
 
-		@CSVColumn(header = "date", wrapper = LocalDateWrapper.class)
+		@CSVReadColumn(header = "date", wrapper = LocalDateReadWrapper.class)
 		public void setDate(LocalDate date) {
 			this.date = date;
 		}
 	}
 
-	public static class LocalDateWrapper implements Wrapper {
+	public static class LocalDateReadWrapper implements ReadWrapper {
 
 		@Override
 		public Object apply(String str) {
@@ -102,7 +102,7 @@ public class WrapperTest {
 
 	}
 
-	public static class LocalDateWrapperFail implements Wrapper {
+	public static class LocalDateReadWrapperFail implements ReadWrapper {
 
 		@Override
 		public Object apply(String str) {

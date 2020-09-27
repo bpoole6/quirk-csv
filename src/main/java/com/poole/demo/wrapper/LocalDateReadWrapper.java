@@ -3,9 +3,9 @@ package com.poole.demo.wrapper;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import com.poole.csv.wrappers.Wrapper;
+import com.poole.csv.wrappers.read.ReadWrapper;
 
-public class LocalDateWrapper implements Wrapper {
+public class LocalDateReadWrapper implements ReadWrapper {
 
 	@Override
 	public Object apply(String str) {

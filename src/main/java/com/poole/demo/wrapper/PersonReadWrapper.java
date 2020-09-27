@@ -1,8 +1,8 @@
 package com.poole.demo.wrapper;
 
-import com.poole.csv.wrappers.Wrapper;
+import com.poole.csv.wrappers.read.ReadWrapper;
 
-public class PersonWrapper implements Wrapper {
+public class PersonReadWrapper implements ReadWrapper {
 
 	@Override
 	public Object apply(String str) {

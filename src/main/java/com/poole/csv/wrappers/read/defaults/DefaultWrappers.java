@@ -1,17 +1,17 @@
-package com.poole.csv.wrappers.defaults;
+package com.poole.csv.wrappers.read.defaults;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.poole.csv.wrappers.Wrapper;
+import com.poole.csv.wrappers.read.ReadWrapper;
 
 /**
  * Contains the default Wrappers for all of the primitive types
  */
 public class DefaultWrappers {
 	@SuppressWarnings("rawtypes")
-	public static Map<Class, Wrapper> getDefault() {
-		Map<Class, Wrapper> map = new HashMap<>();
+	public static Map<Class, ReadWrapper> getDefault() {
+		Map<Class, ReadWrapper> map = new HashMap<>();
 		map.put(Integer.class, new IntDefault());
 		map.put(int.class, new IntDefault());
 		map.put(Byte.class, new ByteDefault());
@@ -33,10 +33,10 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for @java.lang.Integer and int
+	 * Default ReadWrapper for @java.lang.Integer and int
 	 *
 	 */
-	public static class IntDefault implements Wrapper {
+	public static class IntDefault implements ReadWrapper {
 
 		@Override
 		public Object apply(String str) {
@@ -45,10 +45,10 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for @java.lang.Byte and byte
+	 * Default ReadWrapper for @java.lang.Byte and byte
 	 *
 	 */
-	public static class ByteDefault implements Wrapper {
+	public static class ByteDefault implements ReadWrapper {
 
 		@Override
 		public Object apply(String str) {
@@ -57,10 +57,10 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for @java.lang.Character and char
+	 * Default ReadWrapper for @java.lang.Character and char
 	 *
 	 */
-	public static class CharDefault implements Wrapper {
+	public static class CharDefault implements ReadWrapper {
 
 		@Override
 		public Object apply(String str) {
@@ -71,10 +71,10 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for @java.lang.Short and short
+	 * Default ReadWrapper for @java.lang.Short and short
 	 *
 	 */
-	public static class ShortDefault implements Wrapper {
+	public static class ShortDefault implements ReadWrapper {
 
 		@Override
 		public Object apply(String str) {
@@ -83,10 +83,10 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for @java.lang.Long and long
+	 * Default ReadWrapper for @java.lang.Long and long
 	 *
 	 */
-	public static class LongDefault implements Wrapper {
+	public static class LongDefault implements ReadWrapper {
 
 		@Override
 		public Object apply(String str) {
@@ -95,10 +95,10 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for @java.lang.Float and float
+	 * Default ReadWrapper for @java.lang.Float and float
 	 *
 	 */
-	public static class FloatDefault implements Wrapper {
+	public static class FloatDefault implements ReadWrapper {
 
 		@Override
 		public Object apply(String str) {
@@ -107,10 +107,10 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for @java.lang.Double and double
+	 * Default ReadWrapper for @java.lang.Double and double
 	 *
 	 */
-	public static class DoubleDefault implements Wrapper {
+	public static class DoubleDefault implements ReadWrapper {
 
 		@Override
 		public Object apply(String str) {
@@ -119,10 +119,10 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for @java.lang.Boolean and boolean
+	 * Default ReadWrapper for @java.lang.Boolean and boolean
 	 *
 	 */
-	public static class BooleanDefault implements Wrapper {
+	public static class BooleanDefault implements ReadWrapper {
 
 		@Override
 		public Object apply(String str) {
@@ -131,9 +131,9 @@ public class DefaultWrappers {
 	}
 
 	/**
-	 * Default Wrapper for @java.lang.String and string Doing alot here
+	 * Default ReadWrapper for @java.lang.String and string Doing alot here
 	 */
-	public static class StringDefault implements Wrapper {
+	public static class StringDefault implements ReadWrapper {
 
 		@Override
 		public Object apply(String str) {

@@ -1,13 +1,13 @@
-package com.poole.csv.wrappers;
+package com.poole.csv.wrappers.read;
 
 /**
  * Interface used to handle datatype transformations. You can find how this is
- * being used by looking at com.poole.csv.wrappers.defaults.DefaultWrappers to
+ * being used by looking at com.poole.csv.wrappers.read.defaults.DefaultWrappers to
  * see how the primitives are being handled.
  *
  *
  */
-public interface Wrapper {
+public interface ReadWrapper {
 	/**
 	 * Be sure to handle all exceptions. An java.lang.IllegalArgumentException
 	 * can be thrown that will allow the process to continue.

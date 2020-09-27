@@ -17,17 +17,17 @@ import org.apache.commons.csv.CSVRecord;
 
 import com.poole.csv.exception.OrderParserException;
 import com.poole.csv.exception.UninstantiableException;
-import com.poole.csv.wrappers.Wrapper;
+import com.poole.csv.wrappers.read.ReadWrapper;
 
 /**
- * Does the processing for CSVComponent whose type uses ORDER
+ * Does the processing for CSVReadComponent whose type uses ORDER
  */
 @SuppressWarnings("rawtypes")
 class CSVOrderProcessor<T> extends AbstractCSVProcessor {
 
 	private final static Logger LOGGER = Logger.getLogger(CSVOrderProcessor.class.getName());
 	public CSVOrderProcessor(Class<T> parsedClazz,
-							 Map<Class, Wrapper> wrapperMap){
+							 Map<Class, ReadWrapper> wrapperMap){
 		super(parsedClazz,wrapperMap);
 	}
 	@SuppressWarnings("unchecked")

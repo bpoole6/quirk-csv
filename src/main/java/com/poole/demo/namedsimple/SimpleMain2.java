@@ -22,13 +22,13 @@ public class SimpleMain2 {
 		}
 		String csv = "name,age,money" + System.lineSeparator() + sj.toString();
 
-		CSVProcessor processor = new CSVProcessor();
+		CSVProcessor processor = new CSVProcessor(Pojo.class);
 		List<Pojo> list = new ArrayList<>();
 		try {
-			list.addAll(processor.parse(new StringReader(csv), Pojo.class));
+			list.addAll(processor.parse(new StringReader(csv)));
 		} catch (IOException e) {
 		}
-		//list.forEach(System.out::println);
+		list.forEach(System.out::println);
 
 	}
 }

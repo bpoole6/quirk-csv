@@ -2,19 +2,19 @@ package com.poole.demo.wrapper;
 
 import java.time.LocalDate;
 
-import com.poole.csv.annotation.CSVColumn;
-import com.poole.csv.annotation.CSVComponent;
+import com.poole.csv.annotation.CSVReadColumn;
+import com.poole.csv.annotation.CSVReadComponent;
 import com.poole.csv.annotation.CSVReaderType;
 
-@CSVComponent(type = CSVReaderType.ORDER)
+@CSVReadComponent(type = CSVReaderType.ORDER)
 public class Pojo {
-	@CSVColumn(order = 0)
+	@CSVReadColumn(order = 0)
 	private String name;
 
-	@CSVColumn(order = 1, wrapper = LocalDateWrapper.class)
+	@CSVReadColumn(order = 1, wrapper = LocalDateReadWrapper.class)
 	private LocalDate dob;
 
-	@CSVColumn(order = 2)
+	@CSVReadColumn(order = 2)
 	private Person person;
 
 	@Override

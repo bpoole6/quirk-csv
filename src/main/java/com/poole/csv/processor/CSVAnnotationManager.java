@@ -1,15 +1,13 @@
 package com.poole.csv.processor;
 
-import com.poole.csv.wrappers.Wrapper;
-
 /**
- * This is a Manager class that holds the references of CSVColumn annotated
+ * This is a Manager class that holds the references of CSVReadColumn annotated
  * fields and methods. Validation further validation is handled elsewhere such
  * as CSVOrderProcessor and CSVNamedProcessor
  *
  */
 @SuppressWarnings("rawtypes")
-public class CSVAnnotationManager {
+class CSVAnnotationManager {
 	private int order;
 	private String header;
 	private Holder holder;

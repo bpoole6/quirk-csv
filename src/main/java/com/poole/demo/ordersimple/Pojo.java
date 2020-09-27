@@ -1,20 +1,20 @@
 package com.poole.demo.ordersimple;
 
-import com.poole.csv.annotation.CSVColumn;
-import com.poole.csv.annotation.CSVComponent;
+import com.poole.csv.annotation.CSVReadColumn;
+import com.poole.csv.annotation.CSVReadComponent;
 import com.poole.csv.annotation.CSVReaderType;
 
-@CSVComponent(type = CSVReaderType.ORDER)
+@CSVReadComponent(type = CSVReaderType.ORDER)
 public class Pojo {
 	private String name;
 
-	@CSVColumn(order = 1)
+	@CSVReadColumn(order = 1)
 	private Integer age;
 
-	@CSVColumn(order = 2)
+	@CSVReadColumn(order = 2)
 	private Double money;
 
-	@CSVColumn(order = 0)
+	@CSVReadColumn(order = 0)
 	public void setA(String name) {
 		this.name = name;
 	}

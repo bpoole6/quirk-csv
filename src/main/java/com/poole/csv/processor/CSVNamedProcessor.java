@@ -17,10 +17,10 @@ import org.apache.commons.csv.CSVRecord;
 
 import com.poole.csv.exception.NamedParserException;
 import com.poole.csv.exception.UninstantiableException;
-import com.poole.csv.wrappers.Wrapper;
+import com.poole.csv.wrappers.read.ReadWrapper;
 
 /**
- * Does the processing for CSVComponent whose type uses NAMED
+ * Does the processing for CSVReadComponent whose type uses NAMED
  */
 @SuppressWarnings("rawtypes")
 class CSVNamedProcessor<T> extends AbstractCSVProcessor<T> {
@@ -28,12 +28,13 @@ class CSVNamedProcessor<T> extends AbstractCSVProcessor<T> {
 	private final static Logger LOGGER = Logger.getLogger(CSVNamedProcessor.class.getName());
 
 	public CSVNamedProcessor(Class<T> parsedClazz,
-							 Map<Class, Wrapper> wrapperMap){
-		super(parsedClazz,wrapperMap);
+							 Map<Class, ReadWrapper> readWrapperMap){
+		super(parsedClazz,readWrapperMap);
 	}
 
 	protected List<T> read(Reader reader, CSVFormat format) throws IOException {
 		List<T> items = new ArrayList<>();
+		format = format.withFirstRecordAsHeader();
 		Map<String, Holder> map = getMapFromManager(this.csvAnnotationManagers);
 		try (CSVParser parser = new CSVParser(reader, format);) {
 
@@ -61,6 +62,7 @@ class CSVNamedProcessor<T> extends AbstractCSVProcessor<T> {
 		}
 		return items;
 	}
+
 
 	private Map<String, Holder> getMapFromManager(List<CSVAnnotationManager> list) {
 		Map<String, Holder> map = new HashMap<>();

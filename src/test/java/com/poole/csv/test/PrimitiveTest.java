@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.poole.csv.annotation.CSVColumn;
-import com.poole.csv.annotation.CSVComponent;
+import com.poole.csv.annotation.CSVReadColumn;
+import com.poole.csv.annotation.CSVReadComponent;
 import com.poole.csv.annotation.CSVReaderType;
 import com.poole.csv.processor.CSVProcessor;
 
@@ -37,51 +37,51 @@ public class PrimitiveTest {
 		p.stringW = "stringLife";
 		p.type = CSVReaderType.NAMED;
 		final String str = "1,1,2,2,c,c,4,4,6,6,5.4,5.4,5.4,5.4,true,true,stringLife,NAMED";
-		CSVProcessor processor = new CSVProcessor();
-		List<Primitive> list = processor.parse(new StringReader(str), Primitive.class);
+		CSVProcessor processor = new CSVProcessor(Primitive.class);
+		List<Primitive> list = processor.parse(new StringReader(str));
 		System.out.println(list);
 		assertTrue(p.equals(list.get(0)));
 	}
 
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVReaderType.ORDER)
 	public static class Primitive {
-		@CSVColumn(order = 0)
+		@CSVReadColumn(order = 0)
 		Integer intW;
-		@CSVColumn(order = 1)
+		@CSVReadColumn(order = 1)
 		int intS;
-		@CSVColumn(order = 2)
+		@CSVReadColumn(order = 2)
 		Byte byteW;
-		@CSVColumn(order = 3)
+		@CSVReadColumn(order = 3)
 		byte byteS;
-		@CSVColumn(order = 4)
+		@CSVReadColumn(order = 4)
 		Character charW;
-		@CSVColumn(order = 5)
+		@CSVReadColumn(order = 5)
 		char charS;
-		@CSVColumn(order = 6)
+		@CSVReadColumn(order = 6)
 		Short shortW;
-		@CSVColumn(order = 7)
+		@CSVReadColumn(order = 7)
 		short shortS;
-		@CSVColumn(order = 8)
+		@CSVReadColumn(order = 8)
 		Long longW;
-		@CSVColumn(order = 9)
+		@CSVReadColumn(order = 9)
 		long longS;
-		@CSVColumn(order = 10)
+		@CSVReadColumn(order = 10)
 		Float floatW;
-		@CSVColumn(order = 11)
+		@CSVReadColumn(order = 11)
 		float floatS;
-		@CSVColumn(order = 12)
+		@CSVReadColumn(order = 12)
 		Double doubleW;
-		@CSVColumn(order = 13)
+		@CSVReadColumn(order = 13)
 		double doubleS;
-		@CSVColumn(order = 14)
+		@CSVReadColumn(order = 14)
 		Boolean booleanW;
-		@CSVColumn(order = 15)
+		@CSVReadColumn(order = 15)
 		boolean booleanS;
-		@CSVColumn(order = 16)
+		@CSVReadColumn(order = 16)
 		String stringW;
 		CSVReaderType type;
 
-		@CSVColumn(order = 17)
+		@CSVReadColumn(order = 17)
 		public void setType(CSVReaderType type) {
 			this.type = type;
 		}

@@ -5,17 +5,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.poole.csv.wrappers.Wrapper;
+import com.poole.csv.wrappers.read.ReadWrapper;
 
 /**
  * Used to annotate Methods and fields to denote they should receive values
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = { ElementType.FIELD, ElementType.METHOD })
-public @interface CSVColumn {
+public @interface CSVReadColumn {
 	/**
 	 * Used for processing paired with @see
-	 * com.poole.csv.annotation.CSVComponent and has type set to @see
+	 * com.poole.csv.annotation.CSVReadComponent and has type set to @see
 	 * com.poole.csv.annotation.CSVReaderType.NAMED
 	 *
 	 * @return the value in the csv where of header name is this value.
@@ -24,7 +24,7 @@ public @interface CSVColumn {
 
 	/**
 	 * Used for processing paired with @see
-	 * com.poole.csv.annotation.CSVComponent and has type set to @see
+	 * com.poole.csv.annotation.CSVReadComponent and has type set to @see
 	 * com.poole.csv.annotation.CSVReaderType.ORDER
 	 *
 	 * @return The value on the row of this position.
@@ -44,9 +44,9 @@ public @interface CSVColumn {
 	 * that this wrapper class will take precedence over global/default wrapper
 	 * classes.
 	 *
-	 * @see com.poole.csv.wrappers.Wrapper
-	 * @return Wrapper class used for handling the datatype its annotated to
+	 * @see ReadWrapper
+	 * @return ReadWrapper class used for handling the datatype its annotated to
 	 */
-	Class<? extends Wrapper> wrapper() default Wrapper.class;
+	Class<? extends ReadWrapper> wrapper() default ReadWrapper.class;
 
 }

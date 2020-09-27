@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 import com.poole.csv.exception.MissingWrapperException;
 import com.poole.csv.exception.NullableException;
-import com.poole.csv.wrappers.Wrapper;
+import com.poole.csv.wrappers.read.ReadWrapper;
 
 /**
  * Holder has the logic to determine which wrapper to use when processing
@@ -17,38 +17,38 @@ import com.poole.csv.wrappers.Wrapper;
 public class Holder {
 	private Field field;
 	private Method method;
-	private Wrapper wrapper;
+	private ReadWrapper readWrapper;
 	private boolean isNullable;
 	@SuppressWarnings("rawtypes")
 	private Class type;
 	private boolean isEnum = false;
 
-	public Holder(Field field, boolean isNullable, Wrapper wrapper) {
+	public Holder(Field field, boolean isNullable, ReadWrapper readWrapper) {
 		this.field = field;
 		this.isNullable = isNullable;
-		this.wrapper = wrapper;
+		this.readWrapper = readWrapper;
 		this.type = field.getType();
 		if (this.type.isEnum())
 			isEnum = true;
 	}
 
-	public Holder(Method method, boolean isNullable, Wrapper wrapper) {
+	public Holder(Method method, boolean isNullable, ReadWrapper readWrapper) {
 		this.method = method;
 		this.isNullable = isNullable;
-		this.wrapper = wrapper;
+		this.readWrapper = readWrapper;
 		this.type = method.getParameterTypes()[0];
 		if (this.type.isEnum())
 			isEnum = true;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void setValue(Object obj, String value, Map<Class, Wrapper> setValueMap)
+	public void setValue(Object obj, String value, Map<Class, ReadWrapper> setValueMap)
 			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		Supplier<Object> setValue = null;
 
-		if (this.wrapper != null) {
+		if (this.readWrapper != null) {
 			setValue = () -> {
-				return this.wrapper.apply(value);
+				return this.readWrapper.apply(value);
 			};
 		} else if (setValueMap.get(type) != null) {
 			setValue = () -> {

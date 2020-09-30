@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.poole.csv.annotation.CSVReadColumn;
+import com.poole.csv.annotation.CSVReadBinding;
 import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.annotation.CSVType;
 import com.poole.csv.processor.CSVProcessor;
 
 public class PrimitiveTest {
@@ -35,7 +35,7 @@ public class PrimitiveTest {
 		p.booleanW = new Boolean(true);
 		p.booleanS = true;
 		p.stringW = "stringLife";
-		p.type = CSVReaderType.NAMED;
+		p.type = CSVType.NAMED;
 		final String str = "1,1,2,2,c,c,4,4,6,6,5.4,5.4,5.4,5.4,true,true,stringLife,NAMED";
 		CSVProcessor processor = new CSVProcessor(Primitive.class);
 		List<Primitive> list = processor.parse(new StringReader(str));
@@ -43,46 +43,46 @@ public class PrimitiveTest {
 		assertTrue(p.equals(list.get(0)));
 	}
 
-	@CSVReadComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	public static class Primitive {
-		@CSVReadColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		Integer intW;
-		@CSVReadColumn(order = 1)
+		@CSVReadBinding(order = 1)
 		int intS;
-		@CSVReadColumn(order = 2)
+		@CSVReadBinding(order = 2)
 		Byte byteW;
-		@CSVReadColumn(order = 3)
+		@CSVReadBinding(order = 3)
 		byte byteS;
-		@CSVReadColumn(order = 4)
+		@CSVReadBinding(order = 4)
 		Character charW;
-		@CSVReadColumn(order = 5)
+		@CSVReadBinding(order = 5)
 		char charS;
-		@CSVReadColumn(order = 6)
+		@CSVReadBinding(order = 6)
 		Short shortW;
-		@CSVReadColumn(order = 7)
+		@CSVReadBinding(order = 7)
 		short shortS;
-		@CSVReadColumn(order = 8)
+		@CSVReadBinding(order = 8)
 		Long longW;
-		@CSVReadColumn(order = 9)
+		@CSVReadBinding(order = 9)
 		long longS;
-		@CSVReadColumn(order = 10)
+		@CSVReadBinding(order = 10)
 		Float floatW;
-		@CSVReadColumn(order = 11)
+		@CSVReadBinding(order = 11)
 		float floatS;
-		@CSVReadColumn(order = 12)
+		@CSVReadBinding(order = 12)
 		Double doubleW;
-		@CSVReadColumn(order = 13)
+		@CSVReadBinding(order = 13)
 		double doubleS;
-		@CSVReadColumn(order = 14)
+		@CSVReadBinding(order = 14)
 		Boolean booleanW;
-		@CSVReadColumn(order = 15)
+		@CSVReadBinding(order = 15)
 		boolean booleanS;
-		@CSVReadColumn(order = 16)
+		@CSVReadBinding(order = 16)
 		String stringW;
-		CSVReaderType type;
+		CSVType type;
 
-		@CSVReadColumn(order = 17)
-		public void setType(CSVReaderType type) {
+		@CSVReadBinding(order = 17)
+		public void setType(CSVType type) {
 			this.type = type;
 		}
 

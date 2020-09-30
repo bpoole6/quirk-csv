@@ -12,7 +12,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
 public class SimpleMain {
-	public static void main(String[] args) throws NoSuchMethodException {
+	public static void main(String[] args) throws NoSuchMethodException, IOException {
 		final String csv = "Marvin Nowell,34,20000.32,USA" + System.lineSeparator() + "Dillian Lamour,22,2499,France";
 		CSVProcessor processor = new CSVProcessor(PojoChild.class);
 		List<PojoParent> list = new ArrayList<>();
@@ -25,5 +25,6 @@ public class SimpleMain {
 		Method method = CSVPrinter.class.getMethod("printRecord");
 		StringWriter sw = new StringWriter();
 		CSVPrinter p = new CSVPrinter(sw, CSVFormat.DEFAULT);
+
 	}
 }

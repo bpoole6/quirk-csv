@@ -1,18 +1,18 @@
 package com.poole.csv.annotation;
 
+import com.poole.csv.wrappers.write.WriteWrapper;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import com.poole.csv.wrappers.read.ReadWrapper;
 
 /**
  * Used to annotate Methods and fields to denote they should receive values
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = { ElementType.FIELD, ElementType.METHOD })
-public @interface CSVReadColumn {
+public @interface CSVWriteBinding {
 	/**
 	 * Used for processing paired with @see
 	 * com.poole.csv.annotation.CSVReadComponent and has type set to @see
@@ -23,9 +23,9 @@ public @interface CSVReadColumn {
 	String header() default "";
 
 	/**
-	 * Used for processing paired with @see
-	 * com.poole.csv.annotation.CSVReadComponent and has type set to @see
-	 * com.poole.csv.annotation.CSVReaderType.ORDER
+	 * Used for processing paired with
+	 * @see com.poole.csv.annotation.CSVReadComponent and has type set to
+	 * @see CSVType.ORDER
 	 *
 	 * @return The value on the row of this position.
 	 */
@@ -41,12 +41,12 @@ public @interface CSVReadColumn {
 	/**
 	 * You can specify an inline wrapper class for processing. Make sure the
 	 * wrapper class has an no-agrs constructor if it's used here. Be warned
-	 * that this wrapper class will take precedence over global/default wrapper
+	 * that this wrapper class will take precedence over global/default WriteWrapper
 	 * classes.
 	 *
-	 * @see ReadWrapper
-	 * @return ReadWrapper class used for handling the datatype its annotated to
+	 * @see WriteWrapper
+	 * @return WriteWrapper class used for handling the datatype its annotated to
 	 */
-	Class<? extends ReadWrapper> wrapper() default ReadWrapper.class;
+	Class<? extends WriteWrapper> wrapper() default WriteWrapper.class;
 
 }

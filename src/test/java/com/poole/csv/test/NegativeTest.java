@@ -6,9 +6,9 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
-import com.poole.csv.annotation.CSVReadColumn;
+import com.poole.csv.annotation.CSVReadBinding;
 import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.annotation.CSVType;
 import com.poole.csv.exception.MethodParameterException;
 import com.poole.csv.exception.MissingCSVComponent;
 import com.poole.csv.exception.MissingWrapperException;
@@ -64,21 +64,21 @@ public class NegativeTest {
 	public static class O1 {
 	}
 
-	@CSVReadComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	public static class O2 {
-		@CSVReadColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		LocalDate date;
 	}
 
-	@CSVReadComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	protected static class O3a {
-		@CSVReadColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		String date;
 	}
 
-	@CSVReadComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVType.NAMED)
 	protected static class O3b {
-		@CSVReadColumn(header = "date")
+		@CSVReadBinding(header = "date")
 		String date;
 	}
 
@@ -91,23 +91,23 @@ public class NegativeTest {
 
 	}
 
-	@CSVReadComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	public static class O4 {
-		@CSVReadColumn(order = 0, wrapper = W1.class)
+		@CSVReadBinding(order = 0, wrapper = W1.class)
 		String date;
 	}
 	
-	@CSVReadComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	public static class O5 {
 		String date;
-		@CSVReadColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		public void setDate(String date, String failMe){
 			
 		}
 	}
-	@CSVReadComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	public static class O6 {
-		@CSVReadColumn(order = 0,isNullable=false)
+		@CSVReadBinding(order = 0,isNullable=false)
 		String date;
 	}
 }

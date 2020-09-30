@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.poole.csv.annotation.CSVReadColumn;
+import com.poole.csv.annotation.CSVReadBinding;
 import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.annotation.CSVType;
 import com.poole.csv.processor.CSVProcessor;
 
 public class InheritanceTest {
@@ -39,18 +39,18 @@ public class InheritanceTest {
 
 	}
 
-	@CSVReadComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	public static class ParentO1 {
-		@CSVReadColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		Integer a;
 
 	}
 
-	@CSVReadComponent(type = CSVReaderType.ORDER, inheritSuper = true)
+	@CSVReadComponent(type = CSVType.ORDER, inheritSuper = true)
 	public static class ChildO1 extends ParentO1 {
 		String b;
 
-		@CSVReadColumn(order = 1)
+		@CSVReadBinding(order = 1)
 		public void setB(String b) {
 			this.b = b;
 		}
@@ -84,18 +84,18 @@ public class InheritanceTest {
 
 	}
 
-	@CSVReadComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVType.NAMED)
 	public static class ParentN1 {
-		@CSVReadColumn(header = "a")
+		@CSVReadBinding(header = "a")
 		Integer a;
 
 	}
 
-	@CSVReadComponent(type = CSVReaderType.NAMED, inheritSuper = true)
+	@CSVReadComponent(type = CSVType.NAMED, inheritSuper = true)
 	public static class ChildN1 extends ParentN1 {
 		String b;
 
-		@CSVReadColumn(header = "b")
+		@CSVReadBinding(header = "b")
 		public void setB(String b) {
 			this.b = b;
 		}

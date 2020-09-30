@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.poole.csv.annotation.CSVReadColumn;
+import com.poole.csv.annotation.CSVReadBinding;
 import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.annotation.CSVType;
 import com.poole.csv.exception.NamedParserException;
 import com.poole.csv.exception.UninstantiableException;
 import com.poole.csv.processor.CSVProcessor;
@@ -44,16 +44,16 @@ public class NamedTest {
 
 	}
 
-	@CSVReadComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVType.NAMED)
 	public static class O1 {
 
-		@CSVReadColumn(header = "a")
+		@CSVReadBinding(header = "a")
 		String s;
-		@CSVReadColumn(header = "bb")
+		@CSVReadBinding(header = "bb")
 		int i;
 		int j;
 
-		@CSVReadColumn(header = "c")
+		@CSVReadBinding(header = "c")
 		public void setJ(int j) {
 			this.j = j;
 		}
@@ -91,21 +91,21 @@ public class NamedTest {
 
 	}
 
-	@CSVReadComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVType.NAMED)
 	private static class O2 {
 
-		@CSVReadColumn(header = "a")
+		@CSVReadBinding(header = "a")
 		String s;
-		@CSVReadColumn(header = "bb")
+		@CSVReadBinding(header = "bb")
 		int i;
 
 	}
-	@CSVReadComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVType.NAMED)
 	private static class O3 {
 
-		@CSVReadColumn(header = "a")
+		@CSVReadBinding(header = "a")
 		String s;
-		@CSVReadColumn(header = "a")
+		@CSVReadBinding(header = "a")
 		int i;
 
 	}

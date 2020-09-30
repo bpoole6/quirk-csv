@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target(value = { ElementType.TYPE })
 public @interface CSVWriteComponent {
 
-	CSVReaderType type();
-
+	CSVType type();
+	boolean namedIsOrdered() default false;
 	boolean inheritSuper() default false;
 }

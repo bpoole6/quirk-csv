@@ -23,24 +23,24 @@ import com.poole.csv.wrappers.read.ReadWrapper;
  * Does the processing for CSVReadComponent whose type uses ORDER
  */
 @SuppressWarnings("rawtypes")
-class CSVOrderProcessor<T> extends AbstractCSVProcessor {
+class CSVOrderReadProcessor<T> extends AbstractCSVReadProcessor {
 
-	private final static Logger LOGGER = Logger.getLogger(CSVOrderProcessor.class.getName());
-	public CSVOrderProcessor(Class<T> parsedClazz,
-							 Map<Class, ReadWrapper> wrapperMap){
+	private final static Logger LOGGER = Logger.getLogger(CSVOrderReadProcessor.class.getName());
+	public CSVOrderReadProcessor(Class<T> parsedClazz,
+								 Map<Class, ReadWrapper> wrapperMap){
 		super(parsedClazz,wrapperMap);
 	}
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<T> read(Reader reader, CSVFormat format) throws IOException {
 		List<T> items = new ArrayList<>();
-		Map<Integer, Holder> map = getMapFromManager(this.csvAnnotationManagers);
+		Map<Integer, ReadHolder> map = getMapFromManager(this.csvAnnotationManagers);
 
 		try (CSVParser parser = new CSVParser(reader, format);) {
 			for (CSVRecord record : parser) {
 				Object obj = parsedClazz.newInstance();
-				for (Entry<Integer, Holder> entry : map.entrySet()) {
-					Holder hf = entry.getValue();
+				for (Entry<Integer, ReadHolder> entry : map.entrySet()) {
+					ReadHolder hf = entry.getValue();
 					int order = entry.getKey();
 
 					try {
@@ -66,19 +66,10 @@ class CSVOrderProcessor<T> extends AbstractCSVProcessor {
 		return items;
 	}
 
-	private Map<Integer, Holder> getMapFromManager(List<CSVAnnotationManager> list) {
-		Map<Integer, Holder> map = new HashMap<>();
-		List<String> errors = new ArrayList<>();
+	private Map<Integer, ReadHolder> getMapFromManager(List<CSVAnnotationManager> list) {
+		Map<Integer, ReadHolder> map = new HashMap<>();
 		for (CSVAnnotationManager man : list) {
-			Holder holder = map.get(man.getOrder());
-			if (holder != null)
-				errors.add("Non Unique Order# in " + man.getParsedClazz() + ".Order# :" + man.getOrder());
-			else {
-				map.put(man.getOrder(), man.getHolder());
-			}
-		}
-		if (errors.size() > 0) {
-			throw new OrderParserException(errors.toString());
+			map.put(man.getOrder(), man.getReadHolder());
 		}
 		return map;
 	}

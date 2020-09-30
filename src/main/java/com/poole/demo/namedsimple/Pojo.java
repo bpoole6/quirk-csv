@@ -1,24 +1,23 @@
 package com.poole.demo.namedsimple;
 
 import com.opencsv.bean.CsvBindByName;
-import com.poole.csv.annotation.CSVReadColumn;
-import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.annotation.*;
 
-@CSVReadComponent(type = CSVReaderType.NAMED)
+@CSVReadComponent(type = CSVType.NAMED)
+@CSVWriteComponent(type = CSVType.ORDER)
 public class Pojo {
-	@CsvBindByName(column = "name")
+	@CSVWriteBinding(order = 0)
 	private String name;
 
-	@CsvBindByName(column = "age")
-	@CSVReadColumn(header = "age")
+	@CSVWriteBinding(order = 1)
+	@CSVReadBinding(header = "age")
 	private Integer age;
 
-	@CsvBindByName(column = "money")
-	@CSVReadColumn(header = "money")
+	@CSVWriteBinding(order = 2)
+	@CSVReadBinding(header = "money")
 	private Double money;
 
-	@CSVReadColumn(header = "name")
+	@CSVReadBinding(header = "name")
 	public void setA(String name) {
 		this.name = name;
 	}

@@ -1,23 +1,23 @@
 package com.poole.csv.processor;
 
 /**
- * This is a Manager class that holds the references of CSVReadBinding annotated
+ * This is a Manager class that holds the references of CSVWriteBinding annotated
  * fields and methods. Validation further validation is handled elsewhere such
  * as CSVOrderProcessor and CSVNamedProcessor
  *
  */
 @SuppressWarnings("rawtypes")
-class CSVAnnotationManager {
+class CSVWriteAnnotationManager {
 	private int order;
 	private String header;
-	private ReadHolder readHolder;
+	private WriteHolder writeHolder;
 	private Class parsedClazz;
 
-	public CSVAnnotationManager(int order, String header, ReadHolder readHolder, Class parsedClazz) {
+	public CSVWriteAnnotationManager(int order, String header, WriteHolder writeHolder, Class parsedClazz) {
 		super();
 		this.order = order;
 		this.header = header;
-		this.readHolder = readHolder;
+		this.writeHolder = writeHolder;
 		this.parsedClazz = parsedClazz;
 	}
 
@@ -29,8 +29,8 @@ class CSVAnnotationManager {
 		return header;
 	}
 
-	public ReadHolder getReadHolder() {
-		return readHolder;
+	public WriteHolder getWriteHolder() {
+		return writeHolder;
 	}
 
 	public Class getParsedClazz() {

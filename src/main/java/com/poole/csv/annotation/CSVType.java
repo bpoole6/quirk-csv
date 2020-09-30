@@ -1,5 +1,5 @@
 package com.poole.csv.annotation;
 
-public enum CSVReaderType {
+public enum CSVType {
 	ORDER, NAMED
 }

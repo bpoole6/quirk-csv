@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.poole.csv.annotation.CSVReadColumn;
+import com.poole.csv.annotation.CSVReadBinding;
 import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.annotation.CSVType;
 import com.poole.csv.exception.OrderParserException;
 import com.poole.csv.exception.UninstantiableException;
 import com.poole.csv.processor.CSVProcessor;
@@ -24,7 +24,7 @@ public class OrderTest {
 		O1 o1 = new O1();
 		o1.s = "a";
 		o1.j = 0;
-		o1.type=CSVReaderType.NAMED;
+		o1.type= CSVType.NAMED;
 		assertTrue(o1.equals(o1s.get(0)));
 	}
 
@@ -42,20 +42,20 @@ public class OrderTest {
 		p.parse(new StringReader("a,j,NAMED"));
 
 	}
-	@CSVReadComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	public static class O1 {
 
 		
-		@CSVReadColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		String s;
-		@CSVReadColumn(order = 4)
+		@CSVReadBinding(order = 4)
 		int i;
 		int j;
-		@CSVReadColumn(order=2)
-		CSVReaderType type;
-		@CSVReadColumn(order=3)
+		@CSVReadBinding(order=2)
+        CSVType type;
+		@CSVReadBinding(order=3)
 		char c;
-		@CSVReadColumn(order = 1)
+		@CSVReadBinding(order = 1)
 		public void setJ(int j) {
 			this.j = j;
 		}
@@ -100,26 +100,26 @@ public class OrderTest {
 
 	}
 
-	@CSVReadComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	private static class O2 {
-		@CSVReadColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		String s;
-		@CSVReadColumn(order = 1, isNullable = false)
+		@CSVReadBinding(order = 1, isNullable = false)
 		Integer i;
 	}
 
-	@CSVReadComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	private static class O3 {
-		@CSVReadColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		String s;
-		@CSVReadColumn(order = 1, isNullable = false)
+		@CSVReadBinding(order = 1, isNullable = false)
 		Integer i;
 	}
-	@CSVReadComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	private static class O4 {
-		@CSVReadColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		String s;
-		@CSVReadColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		Integer i;
 	}
 }

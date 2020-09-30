@@ -22,7 +22,7 @@ public class SimpleMain {
 		// the primitives(and their wrappers) as well
 		Map<Class, ReadWrapper> m = new HashMap<>();
 		m.put(Person.class, new PersonReadWrapper());
-		CSVProcessor processor = new CSVProcessor(Pojo.class, m);
+		CSVProcessor processor = new CSVProcessor(Pojo.class, m,new HashMap<>());
 		List<Pojo> list = new ArrayList<>();
 		try {
 

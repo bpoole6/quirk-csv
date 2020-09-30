@@ -23,26 +23,26 @@ import com.poole.csv.wrappers.read.ReadWrapper;
  * Does the processing for CSVReadComponent whose type uses NAMED
  */
 @SuppressWarnings("rawtypes")
-class CSVNamedProcessor<T> extends AbstractCSVProcessor<T> {
+class CSVNamedReadProcessor<T> extends AbstractCSVReadProcessor<T> {
 
-	private final static Logger LOGGER = Logger.getLogger(CSVNamedProcessor.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(CSVNamedReadProcessor.class.getName());
 
-	public CSVNamedProcessor(Class<T> parsedClazz,
-							 Map<Class, ReadWrapper> readWrapperMap){
+	public CSVNamedReadProcessor(Class<T> parsedClazz,
+								 Map<Class, ReadWrapper> readWrapperMap){
 		super(parsedClazz,readWrapperMap);
 	}
 
 	protected List<T> read(Reader reader, CSVFormat format) throws IOException {
 		List<T> items = new ArrayList<>();
 		format = format.withFirstRecordAsHeader();
-		Map<String, Holder> map = getMapFromManager(this.csvAnnotationManagers);
+		Map<String, ReadHolder> map = getMapFromManager(this.csvAnnotationManagers);
 		try (CSVParser parser = new CSVParser(reader, format);) {
 
 			for (CSVRecord record : parser) {
 
 				Object obj = parsedClazz.newInstance();
-				for (Entry<String, Holder> entry : map.entrySet()) {
-					Holder hf = entry.getValue();
+				for (Entry<String, ReadHolder> entry : map.entrySet()) {
+					ReadHolder hf = entry.getValue();
 					String header = entry.getKey();
 					try {
 						hf.setValue(obj, record.get(header), setValueMap);
@@ -64,19 +64,10 @@ class CSVNamedProcessor<T> extends AbstractCSVProcessor<T> {
 	}
 
 
-	private Map<String, Holder> getMapFromManager(List<CSVAnnotationManager> list) {
-		Map<String, Holder> map = new HashMap<>();
-		List<String> errors= new ArrayList<>();
+	private Map<String, ReadHolder> getMapFromManager(List<CSVAnnotationManager> list) {
+		Map<String, ReadHolder> map = new HashMap<>();
 		for (CSVAnnotationManager man : list) {
-			Holder holder = map.get(man.getHeader());
-			if (holder != null)
-				errors.add("Non Unique Header in " + man.getParsedClazz() + ".Header :" + man.getParsedClazz());
-			else {
-				map.put(man.getHeader(), man.getHolder());
-			}
-		}
-		if (errors.size() > 0) {
-			throw new NamedParserException(errors.toString());
+			map.put(man.getHeader(), man.getReadHolder());
 		}
 		return map;
 	}

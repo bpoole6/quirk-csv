@@ -1,13 +1,13 @@
 package com.poole.demo.inheritance;
 
-import com.poole.csv.annotation.CSVReadColumn;
-import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.annotation.*;
 
 // Make sure inheritSuper is TRUE
-@CSVReadComponent(type = CSVReaderType.ORDER, inheritSuper = true)
+@CSVReadComponent(type = CSVType.ORDER, inheritSuper = true)
+@CSVWriteComponent(type = CSVType.NAMED, inheritSuper = true)
 public class PojoChild extends PojoParent {
-	@CSVReadColumn(order = 3)
+	@CSVReadBinding(order = 3)
+	@CSVWriteBinding(header = "nationality")
 	private String nationality;
 
 	@Override

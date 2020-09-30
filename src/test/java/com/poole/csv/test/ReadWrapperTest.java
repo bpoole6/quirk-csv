@@ -13,9 +13,9 @@ import com.poole.csv.wrappers.read.ReadWrapper;
 import org.apache.commons.csv.CSVFormat;
 import org.junit.Test;
 
-import com.poole.csv.annotation.CSVReadColumn;
+import com.poole.csv.annotation.CSVReadBinding;
 import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.annotation.CSVType;
 import com.poole.csv.processor.CSVProcessor;
 
 public class ReadWrapperTest {
@@ -33,7 +33,7 @@ public class ReadWrapperTest {
 		final String str = "date" + System.lineSeparator() + "19900511";
 		Map<Class, ReadWrapper> m = new HashMap<>();
 		m.put(LocalDate.class, new LocalDateReadWrapper());
-		CSVProcessor<W2> processor = new CSVProcessor<>(W2.class, m);
+		CSVProcessor<W2> processor = new CSVProcessor<>(W2.class, m,new HashMap<>());
 		W2 w2 = processor.parse(new StringReader(str), CSVFormat.DEFAULT).get(0);
 		assertTrue(w2.date.equals(LocalDate.of(1990, 05, 11)));
 	}
@@ -48,41 +48,41 @@ public class ReadWrapperTest {
 		final String str = "date" + System.lineSeparator() + "19900511";
 		Map<Class, ReadWrapper> m = new HashMap<>();
 		m.put(LocalDate.class, new LocalDateReadWrapperFail());
-		CSVProcessor<W3> processor = new CSVProcessor<>(W3.class,m);
+		CSVProcessor<W3> processor = new CSVProcessor<>(W3.class,m,new HashMap<>());
 		W3 w3 = processor.parse(new StringReader(str), CSVFormat.DEFAULT).get(0);
 		assertTrue(w3.date.equals(LocalDate.of(1990, 05, 11)));
 	}
 
-	@CSVReadComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVType.NAMED)
 	public static class W1 {
 
 		LocalDate date;
-		@CSVReadColumn(header = "dob", wrapper = LocalDateReadWrapper.class)
+		@CSVReadBinding(header = "dob", wrapper = LocalDateReadWrapper.class)
 		LocalDate dob;
 
-		@CSVReadColumn(header = "date", wrapper = LocalDateReadWrapper.class)
+		@CSVReadBinding(header = "date", wrapper = LocalDateReadWrapper.class)
 		public void setDate(LocalDate date) {
 			this.date = date;
 		}
 	}
 
-	@CSVReadComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVType.NAMED)
 	public static class W2 {
 
 		LocalDate date;
 
-		@CSVReadColumn(header = "date")
+		@CSVReadBinding(header = "date")
 		public void setDate(LocalDate date) {
 			this.date = date;
 		}
 	}
 
-	@CSVReadComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVType.NAMED)
 	public static class W3 {
 
 		LocalDate date;
 
-		@CSVReadColumn(header = "date", wrapper = LocalDateReadWrapper.class)
+		@CSVReadBinding(header = "date", wrapper = LocalDateReadWrapper.class)
 		public void setDate(LocalDate date) {
 			this.date = date;
 		}

@@ -4,6 +4,7 @@ import com.poole.csv.wrappers.write.WriteWrapper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Contains the default WriteWrappers for all of the primitive types
@@ -40,6 +41,9 @@ public class DefaultWriteWrappers {
 
 		@Override
 		public String apply(Object obj) {
+			if(Objects.isNull(obj)){
+				return "";
+			}
 			return obj.toString();
 		}
 	}
@@ -52,6 +56,9 @@ public class DefaultWriteWrappers {
 
 		@Override
 		public String apply(Object obj) {
+			if(Objects.isNull(obj)){
+				return "";
+			}
 			return obj.toString();
 		}
 	}
@@ -64,6 +71,9 @@ public class DefaultWriteWrappers {
 
 		@Override
 		public String apply(Object obj) {
+			if(Objects.isNull(obj)){
+				return "";
+			}
 			return obj.toString();
 		}
 
@@ -77,6 +87,9 @@ public class DefaultWriteWrappers {
 
 		@Override
 		public String apply(Object obj) {
+			if(Objects.isNull(obj)){
+				return "";
+			}
 			return obj.toString();
 		}
 	}
@@ -89,6 +102,9 @@ public class DefaultWriteWrappers {
 
 		@Override
 		public String apply(Object obj) {
+			if(Objects.isNull(obj)){
+				return "";
+			}
 			return obj.toString();
 		}
 	}
@@ -101,6 +117,9 @@ public class DefaultWriteWrappers {
 
 		@Override
 		public String apply(Object obj) {
+			if(Objects.isNull(obj)){
+				return "";
+			}
 			return obj.toString();
 		}
 	}
@@ -113,6 +132,9 @@ public class DefaultWriteWrappers {
 
 		@Override
 		public String apply(Object obj) {
+			if(Objects.isNull(obj)){
+				return "";
+			}
 			return obj.toString();
 		}
 	}
@@ -125,6 +147,9 @@ public class DefaultWriteWrappers {
 
 		@Override
 		public String apply(Object obj) {
+			if(Objects.isNull(obj)){
+				return "";
+			}
 			return obj.toString();
 		}
 	}
@@ -136,6 +161,9 @@ public class DefaultWriteWrappers {
 
 		@Override
 		public String apply(Object obj) {
+			if(Objects.isNull(obj)){
+				return "";
+			}
 			return obj.toString();
 		}
 

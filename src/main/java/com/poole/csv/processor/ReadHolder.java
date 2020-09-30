@@ -14,7 +14,7 @@ import com.poole.csv.wrappers.read.ReadWrapper;
  * Holder has the logic to determine which wrapper to use when processing
  * datatypes on specific fields and/or methods
  */
-public class Holder {
+public class ReadHolder {
 	private Field field;
 	private Method method;
 	private ReadWrapper readWrapper;
@@ -23,7 +23,7 @@ public class Holder {
 	private Class type;
 	private boolean isEnum = false;
 
-	public Holder(Field field, boolean isNullable, ReadWrapper readWrapper) {
+	public ReadHolder(Field field, boolean isNullable, ReadWrapper readWrapper) {
 		this.field = field;
 		this.isNullable = isNullable;
 		this.readWrapper = readWrapper;
@@ -32,7 +32,7 @@ public class Holder {
 			isEnum = true;
 	}
 
-	public Holder(Method method, boolean isNullable, ReadWrapper readWrapper) {
+	public ReadHolder(Method method, boolean isNullable, ReadWrapper readWrapper) {
 		this.method = method;
 		this.isNullable = isNullable;
 		this.readWrapper = readWrapper;
@@ -78,10 +78,6 @@ public class Holder {
 
 	}
 
-	public interface Function<T, R> {
-		R apply(T t) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
-	}
-
 	private void checkNullable(String value, String msg) {
 		if (isNulled(value) && !isNullable)
 			throw new NullableException(msg);
@@ -92,5 +88,13 @@ public class Holder {
 			return true;
 		}
 		return false;
+	}
+
+	public Field getField() {
+		return field;
+	}
+
+	public Method getMethod() {
+		return method;
 	}
 }

@@ -1,65 +1,74 @@
 package com.poole.csv.test;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.StringReader;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.poole.csv.annotation.CSVColumn;
-import com.poole.csv.annotation.CSVComponent;
-import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.annotation.*;
 import com.poole.csv.exception.OrderParserException;
 import com.poole.csv.exception.UninstantiableException;
 import com.poole.csv.processor.CSVProcessor;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class OrderTest {
 
 	@Test()
-	public void outOfBoundsNumberFormatExTest() throws IOException {
-		CSVProcessor p = new CSVProcessor();
-		List<O1> o1s = p.parse(new StringReader("a,j,NAMED,dd"), O1.class);
+	public void positiveOrderTest() throws IOException {
+		CSVProcessor<O1> p = new CSVProcessor<>(O1.class);
+		String csv = "a,0,NAMED,d,0"+System.lineSeparator();
+		List<O1> o1s = p.parse(new StringReader(csv));
 		O1 o1 = new O1();
 		o1.s = "a";
 		o1.j = 0;
-		o1.type=CSVReaderType.NAMED;
-		assertTrue(o1.equals(o1s.get(0)));
+		o1.i = 0;
+		o1.type= CSVType.NAMED;
+		o1.c = 'd';
+		assertEquals(o1, o1s.get(0));
+
+		StringWriter sw = new StringWriter();
+		p.write(o1s,sw);
+		assertEquals(csv,sw.toString());
 	}
 
 	@Test(expected = UninstantiableException.class)
 	public void UninstantiableExTest() throws IOException {
 
-		CSVProcessor p = new CSVProcessor();
-		List<O2> o1 = p.parse(new StringReader("a,j,NAMED"), O2.class);
+		CSVProcessor p = new CSVProcessor(O2.class);
+		List<O2> o1 = p.parse(new StringReader("a,j,NAMED"));
 
 	}
 	@Test(expected = OrderParserException.class)
 	public void repeatedOrderTest() throws IOException {
 
-		CSVProcessor p = new CSVProcessor();
-		p.parse(new StringReader("a,j,NAMED"), O4.class);
+		CSVProcessor p = new CSVProcessor(O4.class);
+		p.parse(new StringReader("a,j,NAMED"));
 
 	}
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
+	@CSVWriteComponent(type = CSVType.ORDER)
 	public static class O1 {
 
 		
-		@CSVColumn(order = 0)
+		@CSVReadBinding(order = 0)
+		@CSVWriteBinding(order = 0)
 		String s;
-		@CSVColumn(order = 4)
+		@CSVReadBinding(order = 4)
+		@CSVWriteBinding(order = 4)
 		int i;
+		@CSVWriteBinding(order = 1)
 		int j;
-		@CSVColumn(order=2)
-		CSVReaderType type;
-		@CSVColumn(order=3)
+		@CSVReadBinding(order=2)
+		@CSVWriteBinding(order=2)
+        CSVType type;
+
+		@CSVReadBinding(order=3)
+		@CSVWriteBinding(order=3)
 		char c;
-		@CSVColumn(order = 1)
+		@CSVReadBinding(order = 1)
 		public void setJ(int j) {
 			this.j = j;
 		}
@@ -104,26 +113,26 @@ public class OrderTest {
 
 	}
 
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	private static class O2 {
-		@CSVColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		String s;
-		@CSVColumn(order = 1, isNullable = false)
+		@CSVReadBinding(order = 1, isNullable = false)
 		Integer i;
 	}
 
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	private static class O3 {
-		@CSVColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		String s;
-		@CSVColumn(order = 1, isNullable = false)
+		@CSVReadBinding(order = 1, isNullable = false)
 		Integer i;
 	}
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	private static class O4 {
-		@CSVColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		String s;
-		@CSVColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		Integer i;
 	}
 }

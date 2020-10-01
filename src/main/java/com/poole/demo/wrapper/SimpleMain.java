@@ -1,33 +1,40 @@
 package com.poole.demo.wrapper;
 
+import com.poole.csv.processor.CSVProcessor;
+import com.poole.csv.wrappers.read.ReadWrapper;
+import org.apache.commons.csv.CSVFormat;
+
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.csv.CSVFormat;
-
-import com.poole.csv.processor.CSVProcessor;
-import com.poole.csv.wrappers.Wrapper;
-
 public class SimpleMain {
 	public static void main(String[] args) {
 		final String csv = "Marvin Nowell,19820511,234" + System.lineSeparator() + "Dillian Lamour,19960111,21";
-		CSVProcessor processor = new CSVProcessor();
-		List<Pojo> list = new ArrayList<>();
+		// The key of the map should be of the class you want handled by the
+		// wrapper
+		// class and the value be the wrapper class that does the handling.
+		// You can put
+		// the primitives(and their wrappers) as well
+		Map<Class, ReadWrapper> m = new HashMap<>();
+		m.put(Person.class, new PersonReadWrapper());
+		CSVProcessor<Pojo> processor = new CSVProcessor<>(Pojo.class, m,new HashMap<>());
 		try {
-			// The key of the map should be of the class you want handled by the
-			// wrapper
-			// class and the value be the wrapper class that does the handling.
-			// You can put
-			// the primitives(and their wrappers) as well
-			Map<Class, Wrapper> m = new HashMap<>();
-			m.put(Person.class, new PersonWrapper());
-			list.addAll(processor.parse(new StringReader(csv), Pojo.class, CSVFormat.DEFAULT, m));
+
+			List<Pojo> list = processor.parse(new StringReader(csv), CSVFormat.DEFAULT);
+			list.forEach(System.out::println);
+
+			System.out.println();
+
+			StringWriter sw = new StringWriter();
+			processor.write(list,sw);
+
 		} catch (IOException e) {
 		}
-		list.forEach(System.out::println);
+
 	}
 }

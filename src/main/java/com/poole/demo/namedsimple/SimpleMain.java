@@ -1,22 +1,31 @@
 package com.poole.demo.namedsimple;
 
+import com.poole.csv.processor.CSVProcessor;
+
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.poole.csv.processor.CSVProcessor;
 
 public class SimpleMain {
 	public static void main(String[] args) {
 		final String csv = "name,age,money" + System.lineSeparator() + "Marvin Nowell,34,20000.32"
 				+ System.lineSeparator() + "Dillian Lamour,22,2499";
-		CSVProcessor processor = new CSVProcessor();
-		List<Pojo> list = new ArrayList<>();
+		CSVProcessor<Pojo> processor = new CSVProcessor<>(Pojo.class);
 		try {
-			list.addAll(processor.parse(new StringReader(csv), Pojo.class));
+			// Reading
+			List<Pojo> list = processor.parse(new StringReader(csv));
+			list.forEach(System.out::println);
+
+			System.out.println();
+
+			// Writing
+			StringWriter sw = new StringWriter();
+			processor.write(list,sw);
+			System.out.println(sw.toString());
 		} catch (IOException e) {
 		}
-		list.forEach(System.out::println);
+
 	}
 }

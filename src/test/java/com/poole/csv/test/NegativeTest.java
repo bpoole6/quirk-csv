@@ -1,114 +1,154 @@
 package com.poole.csv.test;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.time.LocalDate;
-import java.util.List;
-
+import com.poole.csv.annotation.*;
+import com.poole.csv.exception.*;
+import com.poole.csv.processor.CSVProcessor;
+import com.poole.csv.wrappers.read.ReadWrapper;
+import com.poole.csv.wrappers.write.WriteWrapper;
 import org.junit.Test;
 
-import com.poole.csv.annotation.CSVColumn;
-import com.poole.csv.annotation.CSVComponent;
-import com.poole.csv.annotation.CSVReaderType;
-import com.poole.csv.exception.MethodParameterException;
-import com.poole.csv.exception.MissingCSVComponent;
-import com.poole.csv.exception.MissingWrapperException;
-import com.poole.csv.exception.NullableException;
-import com.poole.csv.exception.UninstantiableException;
-import com.poole.csv.exception.WrapperInstantiationException;
-import com.poole.csv.processor.CSVProcessor;
-import com.poole.csv.wrappers.Wrapper;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class NegativeTest {
 	@Test(expected = MissingCSVComponent.class)
-	public void missingCSVComponent() throws IOException {
-		CSVProcessor p = new CSVProcessor();
-		p.parse(new StringReader("a,j"), O1.class);
-
+	public void missingReadCSVComponent() throws IOException {
+		CSVProcessor<O1> p = new CSVProcessor<>(O1.class);
+		p.parse(new StringReader("a,j"));
+	}
+	@Test(expected = MissingCSVComponent.class)
+	public void missingWriteCSVComponent() throws IOException {
+		CSVProcessor<O1> p = new CSVProcessor<>(O1.class);
+		p.write(new ArrayList<>(),new StringWriter());
 	}
 
 	@Test(expected = MissingWrapperException.class)
 
 	public void missingWrapperTest() throws IOException {
-		CSVProcessor p = new CSVProcessor();
-		p.parse(new StringReader("a,j"), O2.class);
+		CSVProcessor<O2> p = new CSVProcessor<>(O2.class);
+		p.parse(new StringReader("a,j"));
 	}
 
 	@Test(expected = UninstantiableException.class)
 	public void nonPublicClassTestOrder() throws IOException {
-		CSVProcessor p = new CSVProcessor();
-		p.parse(new StringReader("a"), O3a.class);
+		CSVProcessor<O3a> p = new CSVProcessor<>(O3a.class);
+		p.parse(new StringReader("a"));
 	}
 
 	@Test(expected = UninstantiableException.class)
 	public void nonPublicClassTestNamed() throws IOException {
-		CSVProcessor p = new CSVProcessor();
-		p.parse(new StringReader("date" + System.lineSeparator() + "a"), O3b.class);
+		CSVProcessor<O3b> p = new CSVProcessor<>(O3b.class);
+		p.parse(new StringReader("date" + System.lineSeparator() + "a"));
 	}
 
 	@Test(expected = WrapperInstantiationException.class)
-	public void failedWrapperInstantiateTest() throws IOException {
-		CSVProcessor p = new CSVProcessor();
-		p.parse(new StringReader("a"), O4.class);
+	public void failedReadWrapperInstantiateTest() throws IOException {
+		CSVProcessor<O4> p = new CSVProcessor<>(O4.class);
+	}
+
+	@Test(expected = WrapperInstantiationException.class)
+	public void failedWriteWrapperInstantiateTest() throws IOException {
+		CSVProcessor<O4b> p = new CSVProcessor<>(O4b.class);
 	}
 	@Test(expected = MethodParameterException.class)
-	public void tooManyArgsTest() throws IOException {
-		CSVProcessor p = new CSVProcessor();
-		p.parse(new StringReader("a"), O5.class);
+	public void tooReadManyArgsTest() throws IOException {
+		CSVProcessor<O5> p = new CSVProcessor<>(O5.class);
+		p.parse(new StringReader("a"));
+	}
+	@Test(expected = MethodParameterException.class)
+	public void tooWriteManyArgsTest() throws IOException {
+		CSVProcessor<O5b> p = new CSVProcessor<>(O5b.class);
+	}
+	@Test(expected = MethodReturnTypeException.class)
+	public void returnTypeVoidWriteTest() throws IOException {
+		CSVProcessor<O5c> p = new CSVProcessor<>(O5c.class);
+		System.out.println();
 	}
 	@Test(expected = NullableException.class)
 	public void nullableExTest() throws IOException {
-		CSVProcessor p = new CSVProcessor();
-		p.parse(new StringReader(","), O6.class);
+		CSVProcessor<O6> p = new CSVProcessor<>(O6.class);
+		p.parse(new StringReader(","));
 	}
 	
 	public static class O1 {
 	}
 
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	public static class O2 {
-		@CSVColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		LocalDate date;
 	}
 
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	protected static class O3a {
-		@CSVColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		String date;
 	}
 
-	@CSVComponent(type = CSVReaderType.NAMED)
+	@CSVReadComponent(type = CSVType.NAMED)
 	protected static class O3b {
-		@CSVColumn(header = "date")
+		@CSVReadBinding(header = "date")
 		String date;
 	}
 
-	protected class W1 implements Wrapper {
+	protected class W1 implements ReadWrapper<String> {
 
 		@Override
-		public Object apply(String str) {
+		public String apply(String str) {
+			return null;
+		}
+
+	}
+	protected class W1Write implements WriteWrapper<String> {
+
+		@Override
+		public String apply(String str) {
 			return null;
 		}
 
 	}
 
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	public static class O4 {
-		@CSVColumn(order = 0, wrapper = W1.class)
+		@CSVReadBinding(order = 0, wrapper = W1.class)
+		String date;
+	}
+	@CSVWriteComponent(type = CSVType.ORDER)
+	public static class O4b {
+		@CSVWriteBinding(order = 0, wrapper = W1Write.class)
 		String date;
 	}
 	
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVReadComponent(type = CSVType.ORDER)
 	public static class O5 {
 		String date;
-		@CSVColumn(order = 0)
+		@CSVReadBinding(order = 0)
 		public void setDate(String date, String failMe){
 			
 		}
 	}
-	@CSVComponent(type = CSVReaderType.ORDER)
+	@CSVWriteComponent(type = CSVType.ORDER)
+	public static class O5b {
+		String date;
+		@CSVWriteBinding(order = 0)
+		public String getDate(String date){
+			return null;
+		}
+	}
+	@CSVWriteComponent(type = CSVType.ORDER)
+	public static class O5c {
+		String date;
+		@CSVWriteBinding(order = 0)
+		public void getDate(){
+
+		}
+	}
+	@CSVReadComponent(type = CSVType.ORDER)
 	public static class O6 {
-		@CSVColumn(order = 0,isNullable=false)
+		@CSVReadBinding(order = 0,isNullable=false)
 		String date;
 	}
 }

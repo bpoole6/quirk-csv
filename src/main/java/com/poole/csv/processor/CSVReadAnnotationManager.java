@@ -1,54 +1,65 @@
 package com.poole.csv.processor;
 
+import com.poole.csv.exception.MissingWrapperException;
+import com.poole.csv.exception.NullableException;
+import com.poole.csv.wrappers.read.ReadWrapper;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import com.poole.csv.exception.MissingWrapperException;
-import com.poole.csv.exception.NullableException;
-import com.poole.csv.wrappers.Wrapper;
-
 /**
- * Holder has the logic to determine which wrapper to use when processing
- * datatypes on specific fields and/or methods
+ * This is a Manager class that holds the references of CSVReadBinding annotated
+ * fields and methods. Validation further validation is handled elsewhere such
+ * as {@link CSVOrderReadProcessor} and {@link CSVNamedReadProcessor}
+ *
  */
-public class Holder {
+@SuppressWarnings("rawtypes")
+class CSVReadAnnotationManager {
+	private int order;
+	private String header;
+
 	private Field field;
 	private Method method;
-	private Wrapper wrapper;
+	private ReadWrapper readWrapper;
 	private boolean isNullable;
 	@SuppressWarnings("rawtypes")
 	private Class type;
 	private boolean isEnum = false;
 
-	public Holder(Field field, boolean isNullable, Wrapper wrapper) {
+	public CSVReadAnnotationManager(int order, String header, Field field, boolean isNullable, ReadWrapper readWrapper) {
+		super();
+		this.order = order;
+		this.header = header;
 		this.field = field;
 		this.isNullable = isNullable;
-		this.wrapper = wrapper;
+		this.readWrapper = readWrapper;
 		this.type = field.getType();
 		if (this.type.isEnum())
 			isEnum = true;
 	}
-
-	public Holder(Method method, boolean isNullable, Wrapper wrapper) {
+	public CSVReadAnnotationManager(int order, String header,Method method, boolean isNullable, ReadWrapper readWrapper) {
+		super();
+		this.order = order;
+		this.header = header;
 		this.method = method;
 		this.isNullable = isNullable;
-		this.wrapper = wrapper;
+		this.readWrapper = readWrapper;
 		this.type = method.getParameterTypes()[0];
 		if (this.type.isEnum())
 			isEnum = true;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void setValue(Object obj, String value, Map<Class, Wrapper> setValueMap)
+	public void setValue(Object obj, String value, Map<Class, ReadWrapper> setValueMap)
 			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		Supplier<Object> setValue = null;
 
-		if (this.wrapper != null) {
+		if (this.readWrapper != null) {
 			setValue = () -> {
-				return this.wrapper.apply(value);
+				return this.readWrapper.apply(value);
 			};
 		} else if (setValueMap.get(type) != null) {
 			setValue = () -> {
@@ -78,10 +89,6 @@ public class Holder {
 
 	}
 
-	public interface Function<T, R> {
-		R apply(T t) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
-	}
-
 	private void checkNullable(String value, String msg) {
 		if (isNulled(value) && !isNullable)
 			throw new NullableException(msg);
@@ -93,4 +100,14 @@ public class Holder {
 		}
 		return false;
 	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	public String getHeader() {
+		return header;
+	}
+
+
 }

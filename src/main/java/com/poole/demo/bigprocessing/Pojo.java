@@ -1,22 +1,22 @@
-package com.poole.demo.ordersimple;
+package com.poole.demo.bigprocessing;
 
 import com.poole.csv.annotation.*;
 
-@CSVReadComponent(type = CSVType.ORDER)
+@CSVReadComponent(type = CSVType.NAMED)
 @CSVWriteComponent(type = CSVType.ORDER)
 public class Pojo {
-	@CSVWriteBinding(order = 3)
+	@CSVWriteBinding(order = 0)
 	private String name;
 
-	@CSVReadBinding(order = 1)
-	@CSVWriteBinding(order = 2)
+	@CSVWriteBinding(order = 1)
+	@CSVReadBinding(header = "age")
 	private Integer age;
 
-	@CSVReadBinding(order = 2)
-	@CSVWriteBinding(order = 1)
+	@CSVWriteBinding(order = 2)
+	@CSVReadBinding(header = "money")
 	private Double money;
 
-	@CSVReadBinding(order = 0)
+	@CSVReadBinding(header = "name")
 	public void setA(String name) {
 		this.name = name;
 	}

@@ -1,52 +1,77 @@
 package com.poole.csv.processor;
 
-import java.io.FileNotFoundException;
+import com.poole.csv.annotation.CSVReadComponent;
+import com.poole.csv.annotation.CSVType;
+import com.poole.csv.annotation.CSVWriteComponent;
+import com.poole.csv.exception.MissingCSVComponent;
+import com.poole.csv.wrappers.read.ReadWrapper;
+import com.poole.csv.wrappers.write.WriteWrapper;
+import org.apache.commons.csv.CSVFormat;
+
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.csv.CSVFormat;
-
-import com.poole.csv.annotation.CSVComponent;
-import com.poole.csv.annotation.CSVReaderType;
-import com.poole.csv.exception.MissingCSVComponent;
-import com.poole.csv.wrappers.Wrapper;
-
 /**
- * Acts as a further layer of abstraction to determine which processor to use
+ * Acts as a further layer of abstraction to determine which processors to use
  */
 @SuppressWarnings("rawtypes")
-public class CSVProcessor {
+public class CSVProcessor<T> {
+    private AbstractCSVReadProcessor readProcessor;
+    private AbstractCSVWriteProcessor writeProcessor;
 
-	public <T> List<T> parse(Reader reader, Class<T> clazz) throws IOException {
-		return parse(reader, clazz, CSVFormat.DEFAULT, new HashMap<>());
-	}
+    public List<T> parse(Reader reader) throws IOException {
+        missingReadComponent();
+        return readProcessor.read(reader, CSVFormat.DEFAULT);
+    }
+    public List<T> parse(Reader reader,  CSVFormat format) throws IOException {
+        missingReadComponent();
+        return readProcessor.read(reader, format);
+    }
 
-	public <T> List<T> parse(Reader reader, Class<T> clazz, CSVFormat format, Map<Class, Wrapper> wrapperMap)
-			throws FileNotFoundException, IOException {
-		try {
-			CSVComponent component = clazz.getAnnotation(CSVComponent.class);
+    public void write(List<T>objects, StringWriter sw, CSVFormat csvFormat) throws IOException {
+        missingWriteComponent();
+        writeProcessor.write(objects, sw,csvFormat);
+    }
+    public void write(List<T>objects, StringWriter sw) throws IOException {
+        missingWriteComponent();
+        writeProcessor.write(objects, sw,CSVFormat.DEFAULT);
+    }
 
-			if (component != null) {
-				if (clazz.getAnnotation(CSVComponent.class).type() == CSVReaderType.ORDER) {
-					return new CSVOrderProcessor().parse(reader, clazz, format, wrapperMap);
-				} else {
-					format = format.withFirstRecordAsHeader();
-					return new CSVNamedProcessor().parse(reader, clazz, format, wrapperMap);
-				}
+    public CSVProcessor(Class<T> clazz) {
+        this(clazz,new HashMap<>(),new HashMap<>());
+    }
 
-			} else {
-				throw new MissingCSVComponent("Missing " + CSVComponent.class + " annotation");
-			}
-		} finally {
-			try {
-				if (reader != null && reader.ready())
-					reader.close();
-			} catch (Exception e) {
+    public CSVProcessor(Class<T> clazz, Map<Class, ReadWrapper> readWrapperMap, Map<Class, WriteWrapper> writeWrappersMap) {
+        CSVReadComponent readComponent = clazz.getAnnotation(CSVReadComponent.class);
+        CSVWriteComponent writeComponent = clazz.getAnnotation(CSVWriteComponent.class);
+        if (readComponent != null) {
+            if (readComponent.type() == CSVType.ORDER) {
+                readProcessor = new CSVOrderReadProcessor<>(clazz, readWrapperMap);
+            } else {
+                readProcessor = new CSVNamedReadProcessor<>(clazz, readWrapperMap);
+            }
 
-			}
-		} 
-	}
+        }
+        if(writeComponent!=null){
+            if (writeComponent.type() == CSVType.ORDER) {
+                writeProcessor = new CSVOrderWriteProcessor<>(clazz, writeWrappersMap);
+            } else {
+                writeProcessor = new CSVNamedWriteProcessor<>(clazz, writeWrappersMap);
+            }
+        }
+    }
+    private void missingReadComponent(){
+        if(readProcessor ==null) {
+            throw new MissingCSVComponent("Missing " + CSVReadComponent.class + " annotation");
+        }
+    }
+    private void missingWriteComponent(){
+        if(writeProcessor ==null) {
+            throw new MissingCSVComponent("Missing " + CSVWriteComponent.class + " annotation");
+        }
+    }
 }

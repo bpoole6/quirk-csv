@@ -10,24 +10,24 @@ To see some quick [demos](https://github.com/bpoole6/CSV-Parser/tree/master/src/
 
 ### [INHERITANCE](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/poole/demo/inheritance)
 
-### [WRAPPER](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/poole/demo/wrapper)
+### [WRAPPER](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/poole/demo/readWrapper)
 By default only the primitives(wrappers included) and enums will be handled. You can see this in the [DefaultWrapper](https://github.com/bpoole6/CSV-Parser/blob/master/src/main/java/com/poole/csv/wrappers/defaults/DefaultWrappers.java) class.
 
 ## Simple example
 
 POJO:
 ```
-@CSVComponent(type = CSVReaderType.ORDER)
+@CSVReadComponent(type = CSVReaderType.ORDER)
 public class Pojo {
 	private String name;
 
-	@CSVColumn(order = 1)
+	@CSVReadBinding(order = 1)
 	private Integer age;
 
-	@CSVColumn(order = 2)
+	@CSVReadBinding(order = 2)
 	private Double money;
 
-	@CSVColumn(order = 0)
+	@CSVReadBinding(order = 0)
 	public void setA(String name) {
 		this.name = name;
 	}

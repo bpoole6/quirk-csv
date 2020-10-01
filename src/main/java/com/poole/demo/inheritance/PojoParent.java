@@ -1,20 +1,24 @@
 package com.poole.demo.inheritance;
 
-import com.poole.csv.annotation.CSVColumn;
-import com.poole.csv.annotation.CSVComponent;
-import com.poole.csv.annotation.CSVReaderType;
+import com.poole.csv.annotation.CSVReadBinding;
+import com.poole.csv.annotation.CSVReadComponent;
+import com.poole.csv.annotation.CSVType;
+import com.poole.csv.annotation.CSVWriteBinding;
 
-@CSVComponent(type = CSVReaderType.ORDER)
+@CSVReadComponent(type = CSVType.ORDER)
 public class PojoParent {
+	@CSVWriteBinding(header = "name")
 	private String name;
 
-	@CSVColumn(order = 1)
+	@CSVReadBinding(order = 1)
+	@CSVWriteBinding(header = "age")
 	private Integer age;
 
-	@CSVColumn(order = 2)
+	@CSVReadBinding(order = 2)
+	@CSVWriteBinding(header = "money")
 	private Double money;
 
-	@CSVColumn(order = 0)
+	@CSVReadBinding(order = 0)
 	public void setA(String name) {
 		this.name = name;
 	}

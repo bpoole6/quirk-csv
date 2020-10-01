@@ -1,15 +1,7 @@
 package com.poole.csv.test;
 
+import com.poole.csv.exception.*;
 import org.junit.Test;
-
-import com.poole.csv.exception.MethodParameterException;
-import com.poole.csv.exception.MissingCSVComponent;
-import com.poole.csv.exception.MissingWrapperException;
-import com.poole.csv.exception.NamedParserException;
-import com.poole.csv.exception.NullableException;
-import com.poole.csv.exception.OrderParserException;
-import com.poole.csv.exception.UninstantiableException;
-import com.poole.csv.exception.WrapperInstantiationException;
 
 public class ExceptionTest {
 

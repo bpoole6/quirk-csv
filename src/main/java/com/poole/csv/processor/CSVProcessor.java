@@ -1,5 +1,13 @@
 package com.poole.csv.processor;
 
+import com.poole.csv.annotation.CSVReadComponent;
+import com.poole.csv.annotation.CSVType;
+import com.poole.csv.annotation.CSVWriteComponent;
+import com.poole.csv.exception.MissingCSVComponent;
+import com.poole.csv.wrappers.read.ReadWrapper;
+import com.poole.csv.wrappers.write.WriteWrapper;
+import org.apache.commons.csv.CSVFormat;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -7,18 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.opencsv.AbstractCSVWriter;
-import com.poole.csv.annotation.CSVWriteComponent;
-import com.poole.csv.wrappers.read.ReadWrapper;
-import com.poole.csv.wrappers.write.WriteWrapper;
-import org.apache.commons.csv.CSVFormat;
-
-import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVType;
-import com.poole.csv.exception.MissingCSVComponent;
-
 /**
- * Acts as a further layer of abstraction to determine which processor to use
+ * Acts as a further layer of abstraction to determine which processors to use
  */
 @SuppressWarnings("rawtypes")
 public class CSVProcessor<T> {

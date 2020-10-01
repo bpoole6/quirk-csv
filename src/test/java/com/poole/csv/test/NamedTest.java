@@ -1,19 +1,19 @@
 package com.poole.csv.test;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.List;
-
-import org.junit.Test;
-
-import com.poole.csv.annotation.CSVReadBinding;
-import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVType;
+import com.poole.csv.annotation.*;
 import com.poole.csv.exception.NamedParserException;
 import com.poole.csv.exception.UninstantiableException;
 import com.poole.csv.processor.CSVProcessor;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class NamedTest {
 	
@@ -21,41 +21,69 @@ public class NamedTest {
 	@Test()
 	public void NumberFormatExTest() throws IOException {
 
-		CSVProcessor p = new CSVProcessor(O1.class);
-		List<O1> o1s = p.parse(new StringReader("a,b,c" + System.lineSeparator() + "a,j,u"));
+		CSVProcessor<O1> p = new CSVProcessor<>(O1.class);
+		String csv = "a,b,c" + System.lineSeparator() + "a,0,1"+System.lineSeparator();
+		List<O1> o1s = p.parse(new StringReader(csv));
 		O1 o1 = new O1();
 		o1.s = "a";
-		o1.j = 0;
-		assertTrue(o1.equals(o1s.get(0)));
+		o1.j = 1;
+		o1.i= 0;
+		assertEquals(o1, o1s.get(0));
+
+		StringWriter sw = new StringWriter();
+		p.write(o1s,sw);
+		assertEquals(csv,sw.toString());
 	}
 
 	@Test(expected = UninstantiableException.class)
-	public void UninstantiableExTest() throws IOException {
+	public void readUninstantiableExTest() throws IOException {
 
-		CSVProcessor p = new CSVProcessor(O2.class);
-		List<O2> o1 = p.parse(new StringReader("a,b,c" + System.lineSeparator() + "a,j,u"));
+		CSVProcessor<O2> p = new CSVProcessor<>(O2.class);
+		List<O2> o2 = p.parse(new StringReader("a,b,c" + System.lineSeparator() + "a,j,u"));
 
 	}
 	@Test(expected = NamedParserException.class)
-	public void NamedParserExceptionTest() throws IOException {
+	public void readNamedParserExceptionTest() throws IOException {
 
-		CSVProcessor p = new CSVProcessor(O3.class);
+		CSVProcessor<O3> p = new CSVProcessor<>(O3.class);
 		 p.parse(new StringReader("a,b,c" + System.lineSeparator() + "a,j,u"));
-
 	}
 
+
+	@Test(expected = NamedParserException.class)
+	public void writeNamedParserExceptionTest() throws IOException {
+
+		CSVProcessor<O3> p = new CSVProcessor<>(O3.class);
+		O3 o = new O3();
+		o.i=3;
+		o.s="s";
+		p.write(Arrays.asList(o),new StringWriter());
+	}
+
+	@Test(expected =NamedParserException.class)
+	public void duplicateOrderAssignmentTest() throws IOException{
+		CSVProcessor<O4> p = new CSVProcessor<>(O4.class);
+	}
 	@CSVReadComponent(type = CSVType.NAMED)
+	@CSVWriteComponent(type = CSVType.NAMED, namedIsOrdered = true)
 	public static class O1 {
 
 		@CSVReadBinding(header = "a")
+		@CSVWriteBinding(header = "a",order = 0)
 		String s;
-		@CSVReadBinding(header = "bb")
+		@CSVReadBinding(header = "b")
+		@CSVWriteBinding(header = "b",order = 1)
 		int i;
 		int j;
 
 		@CSVReadBinding(header = "c")
 		public void setJ(int j) {
 			this.j = j;
+		}
+
+		@CSVWriteBinding(header = "c",order = 2)
+		public int getJ() {
+			return j;
 		}
 
 		@Override
@@ -92,20 +120,41 @@ public class NamedTest {
 	}
 
 	@CSVReadComponent(type = CSVType.NAMED)
+	@CSVWriteComponent(type = CSVType.NAMED)
 	private static class O2 {
 
 		@CSVReadBinding(header = "a")
+		@CSVWriteBinding(header = "a")
 		String s;
+
 		@CSVReadBinding(header = "bb")
+		@CSVWriteBinding(header = "bb")
 		int i;
 
 	}
 	@CSVReadComponent(type = CSVType.NAMED)
+	@CSVWriteComponent(type = CSVType.NAMED)
 	private static class O3 {
 
 		@CSVReadBinding(header = "a")
+		@CSVWriteBinding(header = "a")
 		String s;
 		@CSVReadBinding(header = "a")
+		@CSVWriteBinding(header = "a")
+		int i;
+
+	}
+
+	@CSVReadComponent(type = CSVType.NAMED)
+	@CSVWriteComponent(type = CSVType.NAMED,namedIsOrdered = true)
+	private static class O4 {
+
+		@CSVReadBinding(header = "a")
+		@CSVWriteBinding(header = "a",order = 0)
+		String s;
+
+		@CSVReadBinding(header = "bb")
+		@CSVWriteBinding(header = "bb",order = 0)
 		int i;
 
 	}

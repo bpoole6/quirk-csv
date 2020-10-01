@@ -4,17 +4,16 @@ package com.poole.csv.processor;
 import com.poole.csv.annotation.CSVType;
 import com.poole.csv.annotation.CSVWriteBinding;
 import com.poole.csv.annotation.CSVWriteComponent;
-import com.poole.csv.exception.MethodParameterException;
-import com.poole.csv.exception.NamedParserException;
-import com.poole.csv.exception.OrderParserException;
-import com.poole.csv.exception.WrapperInstantiationException;
+import com.poole.csv.exception.*;
 import com.poole.csv.wrappers.write.WriteWrapper;
 import com.poole.csv.wrappers.write.defaults.DefaultWriteWrappers;
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Level;
@@ -22,7 +21,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- * Has most of the logic for processing CSVReadComponent annotated classes
+ * Has most of the logic for processing {@link CSVWriteComponent} annotated classes
  */
 @SuppressWarnings("rawtypes")
 public abstract class AbstractCSVWriteProcessor<T> {
@@ -42,18 +41,21 @@ public abstract class AbstractCSVWriteProcessor<T> {
         getClasses(parsedClazz, classes);
         csvAnnotationManagers.addAll(getHolders(classes));
         CSVWriteComponent component = parsedClazz.getAnnotation(CSVWriteComponent.class);
+        List<Integer> duplicatedOrders = this.csvAnnotationManagers.stream().collect(Collectors.groupingBy(c -> c.getOrder())).values().stream().filter(l -> l.size() > 1).flatMap(l -> l.stream().map(h -> h.getOrder())).distinct().collect(Collectors.toList());
         if (component.type() == CSVType.NAMED) {
             List<String> duplicatedHeaders = this.csvAnnotationManagers.stream().collect(Collectors.groupingBy(c -> c.getHeader())).values().stream().filter(l -> l.size() > 1).flatMap(l -> l.stream().map(h -> h.getHeader())).distinct().collect(Collectors.toList());
             if (duplicatedHeaders.size() > 0) {
                 throw new NamedParserException(String.format("Non Unique Headers in %s. Duplicated Headers: %s", parsedClazz, duplicatedHeaders));
             }
             if (component.namedIsOrdered()) {
+                if (duplicatedOrders.size() > 0) {
+                    throw new NamedParserException(String.format("namedIsOrdered is set to true and non unique order assignment in %s. Duplicated Orders: %s", parsedClazz, duplicatedOrders));
+                }
                 csvAnnotationManagers.sort(Comparator.comparing(CSVWriteAnnotationManager::getOrder));
             }
         } else if (component.type() == CSVType.ORDER) {
-            List<Integer> duplicatedOrders = this.csvAnnotationManagers.stream().collect(Collectors.groupingBy(c -> c.getOrder())).values().stream().filter(l -> l.size() > 1).flatMap(l -> l.stream().map(h -> h.getOrder())).distinct().collect(Collectors.toList());
             if (duplicatedOrders.size() > 0) {
-                throw new OrderParserException(String.format("Non Unique Order assignment in %s. Duplicated Orders: %s", parsedClazz, duplicatedOrders));
+                throw new OrderParserException(String.format("Non unique order assignment in %s. Duplicated Orders: %s", parsedClazz, duplicatedOrders));
             }
             csvAnnotationManagers.sort(Comparator.comparing(c -> c.getOrder()));
         }
@@ -97,9 +99,7 @@ public abstract class AbstractCSVWriteProcessor<T> {
                 int order = f.getAnnotation(CSVWriteBinding.class).order();
                 String header = f.getAnnotation(CSVWriteBinding.class).header();
                 WriteWrapper readWrapper = getWrapper(f.getAnnotation(CSVWriteBinding.class).wrapper());
-                CSVWriteAnnotationManager manager = new CSVWriteAnnotationManager(order, header,
-                        new WriteHolder(f, readWrapper), clazz);
-
+                CSVWriteAnnotationManager manager = new CSVWriteAnnotationManager(order, header, f, readWrapper);
                 list.add(manager);
             }
         }
@@ -115,8 +115,7 @@ public abstract class AbstractCSVWriteProcessor<T> {
                 int order = m.getAnnotation(CSVWriteBinding.class).order();
                 String header = m.getAnnotation(CSVWriteBinding.class).header();
                 WriteWrapper writeWrapper = getWrapper(m.getAnnotation(CSVWriteBinding.class).wrapper());
-                CSVWriteAnnotationManager manager = new CSVWriteAnnotationManager(order, header,
-                        new WriteHolder(m, writeWrapper), clazz);
+                CSVWriteAnnotationManager manager = new CSVWriteAnnotationManager(order, header, m, writeWrapper);
                 list.add(manager);
             }
         }
@@ -154,6 +153,28 @@ public abstract class AbstractCSVWriteProcessor<T> {
 
     protected void validateParameter(Method m) {
         if (m.getParameterCount() != 0)
-            throw new MethodParameterException("Method must have zero parameters:" + m.getName());
+            throw new MethodParameterException(String.format("Method %s#%s must have zero parameters. Consider putting CSVWriteBinding on a getter.", m.getDeclaringClass(),m.getName()));
+        if(m.getReturnType()==Void.TYPE){
+            throw new MethodReturnTypeException(String.format("Method %s#%s return type cannot be void.", m.getDeclaringClass(),m.getName()));
+
+        }
+    }
+
+    protected void doWrite(List<T> objects, StringWriter sw, CSVFormat csvFormat, Logger logger) throws IOException {
+
+        try (CSVPrinter printer = new CSVPrinter(sw, csvFormat);) {
+            for(T obj : objects){
+                List<String>values = new ArrayList<>();
+                for(CSVWriteAnnotationManager cwm: this.csvAnnotationManagers){
+                    values.add(cwm.getValue(obj,this.setValueMap));
+                }
+                printer.printRecord(values);
+            }
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            logger.log(Level.SEVERE,
+                    "Could not extract value", e);
+            throw new UninstantiableException(
+                    "Could not extract value", e);
+        }
     }
 }

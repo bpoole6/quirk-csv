@@ -1,56 +1,69 @@
 package com.poole.csv.test;
 
-import static org.junit.Assert.assertTrue;
+import com.poole.csv.annotation.*;
+import com.poole.csv.processor.CSVProcessor;
+import org.apache.commons.csv.CSVFormat;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
 
-import org.junit.Test;
-
-import com.poole.csv.annotation.CSVReadBinding;
-import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVType;
-import com.poole.csv.processor.CSVProcessor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class InheritanceTest {
 
 	@Test
 	public void orderTest() throws IOException {
-		final String str = "1,sts";
+		final String str = "1,sts"+System.lineSeparator();
 		ChildO1 o = new ChildO1();
 		o.a = 1;
 		o.b = "sts";
-		CSVProcessor processor = new CSVProcessor(ChildO1.class);
+		CSVProcessor<ChildO1> processor = new CSVProcessor<>(ChildO1.class);
 		List<ChildO1> list = processor.parse(new StringReader(str));
-		assertTrue(list.get(0).equals(o));
+		assertEquals(list.get(0), o);
+		StringWriter sw = new StringWriter();
+		processor.write(list,sw);
+		assertEquals(str,sw.toString());
 
 	}
 
 	@Test
 	public void namedTest() throws IOException {
-		final String str = "a,b" + System.lineSeparator() + "1,sts";
+		final String str = "a,b" + System.lineSeparator() + "1,sts"+System.lineSeparator();
 		ChildN1 o = new ChildN1();
 		o.a = 1;
 		o.b = "sts";
 		CSVProcessor processor = new CSVProcessor(ChildN1.class);
 		List<ChildN1> list = processor.parse(new StringReader(str));
-		assertTrue(list.get(0).equals(o));
+		assertEquals(list.get(0), o);
+
+		StringWriter sw = new StringWriter();
+		processor.write(list,sw);
+		assertEquals(str,sw.toString());
+
 
 	}
 
 	@CSVReadComponent(type = CSVType.ORDER)
+	@CSVWriteComponent(type = CSVType.ORDER)
 	public static class ParentO1 {
 		@CSVReadBinding(order = 0)
+		@CSVWriteBinding(order = 0)
 		Integer a;
 
 	}
 
 	@CSVReadComponent(type = CSVType.ORDER, inheritSuper = true)
+	@CSVWriteComponent(type = CSVType.ORDER,inheritSuper = true)
 	public static class ChildO1 extends ParentO1 {
+		@CSVWriteBinding(order = 1)
 		String b;
 
 		@CSVReadBinding(order = 1)
+
 		public void setB(String b) {
 			this.b = b;
 		}
@@ -85,14 +98,18 @@ public class InheritanceTest {
 	}
 
 	@CSVReadComponent(type = CSVType.NAMED)
+	@CSVWriteComponent(type = CSVType.NAMED)
 	public static class ParentN1 {
 		@CSVReadBinding(header = "a")
+		@CSVWriteBinding(header = "a",order = 0)
 		Integer a;
 
 	}
 
 	@CSVReadComponent(type = CSVType.NAMED, inheritSuper = true)
+	@CSVWriteComponent(type = CSVType.NAMED,inheritSuper = true,namedIsOrdered = true)
 	public static class ChildN1 extends ParentN1 {
+		@CSVWriteBinding(header = "b",order = 1)
 		String b;
 
 		@CSVReadBinding(header = "b")

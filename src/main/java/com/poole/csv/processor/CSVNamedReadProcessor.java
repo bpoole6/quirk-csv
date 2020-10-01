@@ -1,26 +1,25 @@
 package com.poole.csv.processor;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.poole.csv.exception.UninstantiableException;
+import com.poole.csv.wrappers.read.ReadWrapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import com.poole.csv.exception.NamedParserException;
-import com.poole.csv.exception.UninstantiableException;
-import com.poole.csv.wrappers.read.ReadWrapper;
+import java.io.IOException;
+import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
- * Does the processing for CSVReadComponent whose type uses NAMED
+ * Does the processing for {@link  com.poole.csv.annotation.CSVReadComponent} whose type uses NAMED
  */
 @SuppressWarnings("rawtypes")
 class CSVNamedReadProcessor<T> extends AbstractCSVReadProcessor<T> {
@@ -35,17 +34,17 @@ class CSVNamedReadProcessor<T> extends AbstractCSVReadProcessor<T> {
 	protected List<T> read(Reader reader, CSVFormat format) throws IOException {
 		List<T> items = new ArrayList<>();
 		format = format.withFirstRecordAsHeader();
-		Map<String, ReadHolder> map = getMapFromManager(this.csvAnnotationManagers);
+		Map<String, CSVReadAnnotationManager> map = this.csvReadAnnotationManagers.stream().collect(Collectors.toMap(CSVReadAnnotationManager::getHeader, Function.identity()));
 		try (CSVParser parser = new CSVParser(reader, format);) {
 
 			for (CSVRecord record : parser) {
 
 				Object obj = parsedClazz.newInstance();
-				for (Entry<String, ReadHolder> entry : map.entrySet()) {
-					ReadHolder hf = entry.getValue();
+				for (Entry<String, CSVReadAnnotationManager> entry : map.entrySet()) {
+					CSVReadAnnotationManager cm = entry.getValue();
 					String header = entry.getKey();
 					try {
-						hf.setValue(obj, record.get(header), setValueMap);
+						cm.setValue(obj, record.get(header), setValueMap);
 					} catch (IllegalArgumentException | InvocationTargetException e) {
 						LOGGER.log(Level.SEVERE, "Failed for header: " + header, e);
 					} 
@@ -62,14 +61,4 @@ class CSVNamedReadProcessor<T> extends AbstractCSVReadProcessor<T> {
 		}
 		return items;
 	}
-
-
-	private Map<String, ReadHolder> getMapFromManager(List<CSVAnnotationManager> list) {
-		Map<String, ReadHolder> map = new HashMap<>();
-		for (CSVAnnotationManager man : list) {
-			map.put(man.getHeader(), man.getReadHolder());
-		}
-		return map;
-	}
-
 }

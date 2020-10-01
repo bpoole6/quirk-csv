@@ -1,6 +1,12 @@
 package com.poole.csv.test;
 
-import static org.junit.Assert.assertTrue;
+import com.poole.csv.annotation.CSVReadBinding;
+import com.poole.csv.annotation.CSVReadComponent;
+import com.poole.csv.annotation.CSVType;
+import com.poole.csv.processor.CSVProcessor;
+import com.poole.csv.wrappers.read.ReadWrapper;
+import org.apache.commons.csv.CSVFormat;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -9,14 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.poole.csv.wrappers.read.ReadWrapper;
-import org.apache.commons.csv.CSVFormat;
-import org.junit.Test;
-
-import com.poole.csv.annotation.CSVReadBinding;
-import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVType;
-import com.poole.csv.processor.CSVProcessor;
+import static org.junit.Assert.assertTrue;
 
 public class ReadWrapperTest {
 

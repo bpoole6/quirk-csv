@@ -1,27 +1,32 @@
 package com.poole.demo.wrapper;
 
+import com.poole.csv.annotation.*;
+
 import java.time.LocalDate;
 
-import com.poole.csv.annotation.CSVReadBinding;
-import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVType;
-
 @CSVReadComponent(type = CSVType.ORDER)
+@CSVWriteComponent(type = CSVType.NAMED, namedIsOrdered = true)
 public class Pojo {
-	@CSVReadBinding(order = 0)
-	private String name;
+    @CSVReadBinding(order = 0)
+    @CSVWriteBinding(order = 0, header = "name")
+    private String name;
 
-	@CSVReadBinding(order = 1, wrapper = LocalDateReadWrapper.class)
-	private LocalDate dob;
+    @CSVReadBinding(order = 1, wrapper = LocalDateReadWrapper.class)
+    @CSVWriteBinding(order = 0, header = "dob") // Without specifying a wrapper the toString will be called
+    private LocalDate dob;
 
-	@CSVReadBinding(order = 2)
-	private Person person;
+    @CSVReadBinding(order = 2)
+    private Person person;
 
-	@Override
-	public String toString() {
+    @Override
+    public String toString() {
 
-		return "Name: " + name + System.lineSeparator() + "\tDate Of Birth: " + dob + System.lineSeparator() + "\tId: "
-				+ person.getId();
-	}
+        return "Name: " + name + System.lineSeparator() + "\tDate Of Birth: " + dob + System.lineSeparator() + "\tId: "
+                + person.getId();
+    }
 
+    @CSVWriteBinding(order = 0, header = "id", wrapper = PersonWriteWrapper.class)
+    public Person getPerson() {
+        return person;
+    }
 }

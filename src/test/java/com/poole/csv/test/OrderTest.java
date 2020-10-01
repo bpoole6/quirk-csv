@@ -1,31 +1,37 @@
 package com.poole.csv.test;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.List;
-
-import org.junit.Test;
-
-import com.poole.csv.annotation.CSVReadBinding;
-import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVType;
+import com.poole.csv.annotation.*;
 import com.poole.csv.exception.OrderParserException;
 import com.poole.csv.exception.UninstantiableException;
 import com.poole.csv.processor.CSVProcessor;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class OrderTest {
 
 	@Test()
-	public void outOfBoundsNumberFormatExTest() throws IOException {
-		CSVProcessor p = new CSVProcessor(O1.class);
-		List<O1> o1s = p.parse(new StringReader("a,j,NAMED,dd"));
+	public void positiveOrderTest() throws IOException {
+		CSVProcessor<O1> p = new CSVProcessor<>(O1.class);
+		String csv = "a,0,NAMED,d,0"+System.lineSeparator();
+		List<O1> o1s = p.parse(new StringReader(csv));
 		O1 o1 = new O1();
 		o1.s = "a";
 		o1.j = 0;
+		o1.i = 0;
 		o1.type= CSVType.NAMED;
-		assertTrue(o1.equals(o1s.get(0)));
+		o1.c = 'd';
+		assertEquals(o1, o1s.get(0));
+
+		StringWriter sw = new StringWriter();
+		p.write(o1s,sw);
+		assertEquals(csv,sw.toString());
 	}
 
 	@Test(expected = UninstantiableException.class)
@@ -43,17 +49,24 @@ public class OrderTest {
 
 	}
 	@CSVReadComponent(type = CSVType.ORDER)
+	@CSVWriteComponent(type = CSVType.ORDER)
 	public static class O1 {
 
 		
 		@CSVReadBinding(order = 0)
+		@CSVWriteBinding(order = 0)
 		String s;
 		@CSVReadBinding(order = 4)
+		@CSVWriteBinding(order = 4)
 		int i;
+		@CSVWriteBinding(order = 1)
 		int j;
 		@CSVReadBinding(order=2)
+		@CSVWriteBinding(order=2)
         CSVType type;
+
 		@CSVReadBinding(order=3)
+		@CSVWriteBinding(order=3)
 		char c;
 		@CSVReadBinding(order = 1)
 		public void setJ(int j) {

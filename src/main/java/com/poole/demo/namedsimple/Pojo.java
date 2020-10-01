@@ -1,6 +1,5 @@
 package com.poole.demo.namedsimple;
 
-import com.opencsv.bean.CsvBindByName;
 import com.poole.csv.annotation.*;
 
 @CSVReadComponent(type = CSVType.NAMED)

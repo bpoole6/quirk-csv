@@ -1,11 +1,11 @@
 package com.poole.csv.annotation;
 
+import com.poole.csv.wrappers.read.ReadWrapper;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import com.poole.csv.wrappers.read.ReadWrapper;
 
 /**
  * Used to annotate Methods and fields to denote they should receive values

@@ -1,20 +1,26 @@
 package com.poole.csv.processor;
 
+import com.poole.csv.exception.MissingWrapperException;
+import com.poole.csv.exception.NullableException;
+import com.poole.csv.wrappers.read.ReadWrapper;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import com.poole.csv.exception.MissingWrapperException;
-import com.poole.csv.exception.NullableException;
-import com.poole.csv.wrappers.read.ReadWrapper;
-
 /**
- * Holder has the logic to determine which wrapper to use when processing
- * datatypes on specific fields and/or methods
+ * This is a Manager class that holds the references of CSVReadBinding annotated
+ * fields and methods. Validation further validation is handled elsewhere such
+ * as {@link CSVOrderReadProcessor} and {@link CSVNamedReadProcessor}
+ *
  */
-public class ReadHolder {
+@SuppressWarnings("rawtypes")
+class CSVReadAnnotationManager {
+	private int order;
+	private String header;
+
 	private Field field;
 	private Method method;
 	private ReadWrapper readWrapper;
@@ -23,7 +29,10 @@ public class ReadHolder {
 	private Class type;
 	private boolean isEnum = false;
 
-	public ReadHolder(Field field, boolean isNullable, ReadWrapper readWrapper) {
+	public CSVReadAnnotationManager(int order, String header, Field field, boolean isNullable, ReadWrapper readWrapper) {
+		super();
+		this.order = order;
+		this.header = header;
 		this.field = field;
 		this.isNullable = isNullable;
 		this.readWrapper = readWrapper;
@@ -31,8 +40,10 @@ public class ReadHolder {
 		if (this.type.isEnum())
 			isEnum = true;
 	}
-
-	public ReadHolder(Method method, boolean isNullable, ReadWrapper readWrapper) {
+	public CSVReadAnnotationManager(int order, String header,Method method, boolean isNullable, ReadWrapper readWrapper) {
+		super();
+		this.order = order;
+		this.header = header;
 		this.method = method;
 		this.isNullable = isNullable;
 		this.readWrapper = readWrapper;
@@ -90,11 +101,13 @@ public class ReadHolder {
 		return false;
 	}
 
-	public Field getField() {
-		return field;
+	public int getOrder() {
+		return order;
 	}
 
-	public Method getMethod() {
-		return method;
+	public String getHeader() {
+		return header;
 	}
+
+
 }

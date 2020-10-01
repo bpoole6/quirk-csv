@@ -1,17 +1,16 @@
 package com.poole.csv.test;
 
-import static org.junit.Assert.assertTrue;
+import com.poole.csv.annotation.CSVReadBinding;
+import com.poole.csv.annotation.CSVReadComponent;
+import com.poole.csv.annotation.CSVType;
+import com.poole.csv.processor.CSVProcessor;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-import org.junit.Test;
-
-import com.poole.csv.annotation.CSVReadBinding;
-import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVType;
-import com.poole.csv.processor.CSVProcessor;
+import static org.junit.Assert.assertTrue;
 
 public class PrimitiveTest {
 

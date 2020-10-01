@@ -1,16 +1,16 @@
 package com.poole.demo.wrapper;
 
+import com.poole.csv.processor.CSVProcessor;
+import com.poole.csv.wrappers.read.ReadWrapper;
+import org.apache.commons.csv.CSVFormat;
+
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.poole.csv.wrappers.read.ReadWrapper;
-import org.apache.commons.csv.CSVFormat;
-
-import com.poole.csv.processor.CSVProcessor;
 
 public class SimpleMain {
 	public static void main(String[] args) {
@@ -22,13 +22,19 @@ public class SimpleMain {
 		// the primitives(and their wrappers) as well
 		Map<Class, ReadWrapper> m = new HashMap<>();
 		m.put(Person.class, new PersonReadWrapper());
-		CSVProcessor processor = new CSVProcessor(Pojo.class, m,new HashMap<>());
-		List<Pojo> list = new ArrayList<>();
+		CSVProcessor<Pojo> processor = new CSVProcessor<>(Pojo.class, m,new HashMap<>());
 		try {
 
-			list.addAll(processor.parse(new StringReader(csv), CSVFormat.DEFAULT));
+			List<Pojo> list = processor.parse(new StringReader(csv), CSVFormat.DEFAULT);
+			list.forEach(System.out::println);
+
+			System.out.println();
+
+			StringWriter sw = new StringWriter();
+			processor.write(list,sw);
+
 		} catch (IOException e) {
 		}
-		list.forEach(System.out::println);
+
 	}
 }

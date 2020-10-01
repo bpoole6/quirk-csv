@@ -1,63 +1,75 @@
 package com.poole.csv.test;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.time.LocalDate;
-
-import org.junit.Test;
-
-import com.poole.csv.annotation.CSVReadBinding;
-import com.poole.csv.annotation.CSVReadComponent;
-import com.poole.csv.annotation.CSVType;
-import com.poole.csv.exception.MethodParameterException;
-import com.poole.csv.exception.MissingCSVComponent;
-import com.poole.csv.exception.MissingWrapperException;
-import com.poole.csv.exception.NullableException;
-import com.poole.csv.exception.UninstantiableException;
-import com.poole.csv.exception.WrapperInstantiationException;
+import com.poole.csv.annotation.*;
+import com.poole.csv.exception.*;
 import com.poole.csv.processor.CSVProcessor;
 import com.poole.csv.wrappers.read.ReadWrapper;
+import com.poole.csv.wrappers.write.WriteWrapper;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class NegativeTest {
 	@Test(expected = MissingCSVComponent.class)
-	public void missingCSVComponent() throws IOException {
-		CSVProcessor p = new CSVProcessor(O1.class);
+	public void missingReadCSVComponent() throws IOException {
+		CSVProcessor<O1> p = new CSVProcessor<>(O1.class);
 		p.parse(new StringReader("a,j"));
-
+	}
+	@Test(expected = MissingCSVComponent.class)
+	public void missingWriteCSVComponent() throws IOException {
+		CSVProcessor<O1> p = new CSVProcessor<>(O1.class);
+		p.write(new ArrayList<>(),new StringWriter());
 	}
 
 	@Test(expected = MissingWrapperException.class)
 
 	public void missingWrapperTest() throws IOException {
-		CSVProcessor p = new CSVProcessor(O2.class);
+		CSVProcessor<O2> p = new CSVProcessor<>(O2.class);
 		p.parse(new StringReader("a,j"));
 	}
 
 	@Test(expected = UninstantiableException.class)
 	public void nonPublicClassTestOrder() throws IOException {
-		CSVProcessor p = new CSVProcessor(O3a.class);
+		CSVProcessor<O3a> p = new CSVProcessor<>(O3a.class);
 		p.parse(new StringReader("a"));
 	}
 
 	@Test(expected = UninstantiableException.class)
 	public void nonPublicClassTestNamed() throws IOException {
-		CSVProcessor p = new CSVProcessor(O3b.class);
+		CSVProcessor<O3b> p = new CSVProcessor<>(O3b.class);
 		p.parse(new StringReader("date" + System.lineSeparator() + "a"));
 	}
 
 	@Test(expected = WrapperInstantiationException.class)
-	public void failedWrapperInstantiateTest() throws IOException {
-		CSVProcessor p = new CSVProcessor(O4.class);
+	public void failedReadWrapperInstantiateTest() throws IOException {
+		CSVProcessor<O4> p = new CSVProcessor<>(O4.class);
+	}
+
+	@Test(expected = WrapperInstantiationException.class)
+	public void failedWriteWrapperInstantiateTest() throws IOException {
+		CSVProcessor<O4b> p = new CSVProcessor<>(O4b.class);
+	}
+	@Test(expected = MethodParameterException.class)
+	public void tooReadManyArgsTest() throws IOException {
+		CSVProcessor<O5> p = new CSVProcessor<>(O5.class);
 		p.parse(new StringReader("a"));
 	}
 	@Test(expected = MethodParameterException.class)
-	public void tooManyArgsTest() throws IOException {
-		CSVProcessor p = new CSVProcessor(O5.class);
-		p.parse(new StringReader("a"));
+	public void tooWriteManyArgsTest() throws IOException {
+		CSVProcessor<O5b> p = new CSVProcessor<>(O5b.class);
+	}
+	@Test(expected = MethodReturnTypeException.class)
+	public void returnTypeVoidWriteTest() throws IOException {
+		CSVProcessor<O5c> p = new CSVProcessor<>(O5c.class);
+		System.out.println();
 	}
 	@Test(expected = NullableException.class)
 	public void nullableExTest() throws IOException {
-		CSVProcessor p = new CSVProcessor(O6.class);
+		CSVProcessor<O6> p = new CSVProcessor<>(O6.class);
 		p.parse(new StringReader(","));
 	}
 	
@@ -82,10 +94,18 @@ public class NegativeTest {
 		String date;
 	}
 
-	protected class W1 implements ReadWrapper {
+	protected class W1 implements ReadWrapper<String> {
 
 		@Override
-		public Object apply(String str) {
+		public String apply(String str) {
+			return null;
+		}
+
+	}
+	protected class W1Write implements WriteWrapper<String> {
+
+		@Override
+		public String apply(String str) {
 			return null;
 		}
 
@@ -96,6 +116,11 @@ public class NegativeTest {
 		@CSVReadBinding(order = 0, wrapper = W1.class)
 		String date;
 	}
+	@CSVWriteComponent(type = CSVType.ORDER)
+	public static class O4b {
+		@CSVWriteBinding(order = 0, wrapper = W1Write.class)
+		String date;
+	}
 	
 	@CSVReadComponent(type = CSVType.ORDER)
 	public static class O5 {
@@ -103,6 +128,22 @@ public class NegativeTest {
 		@CSVReadBinding(order = 0)
 		public void setDate(String date, String failMe){
 			
+		}
+	}
+	@CSVWriteComponent(type = CSVType.ORDER)
+	public static class O5b {
+		String date;
+		@CSVWriteBinding(order = 0)
+		public String getDate(String date){
+			return null;
+		}
+	}
+	@CSVWriteComponent(type = CSVType.ORDER)
+	public static class O5c {
+		String date;
+		@CSVWriteBinding(order = 0)
+		public void getDate(){
+
 		}
 	}
 	@CSVReadComponent(type = CSVType.ORDER)

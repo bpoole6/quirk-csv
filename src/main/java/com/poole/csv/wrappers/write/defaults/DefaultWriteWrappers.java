@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Contains the default WriteWrappers for all of the primitive types
+ * Contains the default {@link WriteWrapper} for all of the primitive types
  */
 public class DefaultWriteWrappers {
 	@SuppressWarnings("rawtypes")
@@ -34,7 +34,7 @@ public class DefaultWriteWrappers {
 	}
 
 	/**
-	 * Default WriteWrapper for @java.lang.Integer and int
+	 * Default implementation for {@link java.lang.Integer} and int
 	 *
 	 */
 	public static class IntDefault implements WriteWrapper {
@@ -49,7 +49,7 @@ public class DefaultWriteWrappers {
 	}
 
 	/**
-	 * Default WriteWrapper for @java.lang.Byte and byte
+	 * Default implementation for {@link java.lang.Byte} and byte
 	 *
 	 */
 	public static class ByteDefault implements WriteWrapper {
@@ -64,7 +64,7 @@ public class DefaultWriteWrappers {
 	}
 
 	/**
-	 * Default WriteWrapper for @java.lang.Character and char
+	 * Default implementation for {@link java.lang.Character} and char
 	 *
 	 */
 	public static class CharDefault implements WriteWrapper {
@@ -80,7 +80,7 @@ public class DefaultWriteWrappers {
 	}
 
 	/**
-	 * Default WriteWrapper for @java.lang.Short and short
+	 * Default implementation for {@link java.lang.Short} and short
 	 *
 	 */
 	public static class ShortDefault implements WriteWrapper {
@@ -95,7 +95,7 @@ public class DefaultWriteWrappers {
 	}
 
 	/**
-	 * Default WriteWrapper for @java.lang.Long and long
+	 * Default implementation for {@link java.lang.Long} and long
 	 *
 	 */
 	public static class LongDefault implements WriteWrapper {
@@ -110,7 +110,7 @@ public class DefaultWriteWrappers {
 	}
 
 	/**
-	 * Default WriteWrapper for @java.lang.Float and float
+	 * Default implementation for {@link java.lang.Float} and float
 	 *
 	 */
 	public static class FloatDefault implements WriteWrapper {
@@ -125,7 +125,7 @@ public class DefaultWriteWrappers {
 	}
 
 	/**
-	 * Default WriteWrapper for @java.lang.Double and double
+	 * Default implementation for {@link java.lang.Double} and double
 	 *
 	 */
 	public static class DoubleDefault implements WriteWrapper {
@@ -140,7 +140,7 @@ public class DefaultWriteWrappers {
 	}
 
 	/**
-	 * Default WriteWrapper for @java.lang.Boolean and boolean
+	 * Default implementation for {@link java.lang.Boolean} and boolean
 	 *
 	 */
 	public static class BooleanDefault implements WriteWrapper {
@@ -155,7 +155,7 @@ public class DefaultWriteWrappers {
 	}
 
 	/**
-	 * Default WriteWrapper for @java.lang.String and string Doing alot here
+	 * Default implementation for {@link java.lang.String} and string Doing alot here
 	 */
 	public static class StringDefault implements WriteWrapper {
 

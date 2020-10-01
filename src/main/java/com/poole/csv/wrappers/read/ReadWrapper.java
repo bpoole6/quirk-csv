@@ -7,7 +7,7 @@ package com.poole.csv.wrappers.read;
  *
  *
  */
-public interface ReadWrapper {
+public interface ReadWrapper<T> {
 	/**
 	 * Be sure to handle all exceptions. An java.lang.IllegalArgumentException
 	 * can be thrown that will allow the process to continue.
@@ -15,5 +15,5 @@ public interface ReadWrapper {
 	 * @param str
 	 * @return an object after transforming
 	 */
-	Object apply(String str);
+	T apply(String str);
 }

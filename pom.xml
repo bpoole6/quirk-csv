@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>bpoole6.github.io</groupId>
-	<artifactId>csv-parser</artifactId>
+	<artifactId>quirk-csv</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<description>The csv-parser library enables the use of annotation when parsing csvs'. This includes doing it by the order in which the row is read or by headers.</description>
@@ -53,13 +53,6 @@
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.opencsv</groupId>
-			<artifactId>opencsv</artifactId>
-			<version>5.2</version>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<distributionManagement>
@@ -79,8 +72,7 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.1.0</version>
 				<configuration>
-
-					<excludePackageNames>com.poole.csv.test.*:com.poole.demo.*:com.poole.csv.wrappers.*</excludePackageNames>
+					<excludePackageNames>com.quirk.csv.test.*:com.quirk.demo.*:com.quirk.csv.wrappers.*</excludePackageNames>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -101,7 +93,7 @@
 						</goals>
 						<configuration>
 							<excludes>
-								<exclude>**/com/poole/demo/**/*</exclude>
+								<exclude>**/com/quirk/demo/**/*</exclude>
 							</excludes>
 						</configuration>
 					</execution>

@@ -1,17 +1,16 @@
 # CSV-Parser
 Allows you to parse your csv using java annotations!
 
-To see some quick [demos](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/poole/demo)
+To see some quick [demos](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/quirk/demo)
 ## DEMOS
 
-### [ORDER](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/poole/demo/ordersimple)
+### [ORDER](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/quirk/demo/ordersimple)
 
-### [NAMED](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/poole/demo/namedsimple)
+### [NAMED](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/quirk/demo/namedsimple)
 
-### [INHERITANCE](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/poole/demo/inheritance)
+### [INHERITANCE](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/quirk/demo/inheritance)
 
-### [WRAPPER](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/poole/demo/readWrapper)
-By default only the primitives(wrappers included) and enums will be handled. You can see this in the [DefaultWrapper](https://github.com/bpoole6/CSV-Parser/blob/master/src/main/java/com/poole/csv/wrappers/defaults/DefaultWrappers.java) class.
+### [WRAPPER](https://github.com/bpoole6/CSV-Parser/tree/master/src/main/java/com/quirk/demo/readWrapper)
 
 ## Simple example
 

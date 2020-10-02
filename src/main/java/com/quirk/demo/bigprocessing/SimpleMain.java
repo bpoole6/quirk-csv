@@ -11,7 +11,7 @@ import java.util.*;
  * This is to show just how fast processing can occur for reading then writing the csv. Granted all this will be in memory.
  * Reading and writing to disk would incur additional time
  */
-public class BigProcess {
+public class SimpleMain {
     public static void main(String[] args) {
         StringJoiner sj = new StringJoiner(System.lineSeparator());
         for (int i = 0; i < 1_000_000; i++) {

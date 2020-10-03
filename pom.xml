@@ -88,6 +88,7 @@
 							<goal>sign</goal>
 						</goals>
 						<configuration>
+<!--							keyserver https://keys.openpgp.org/-->
 							<keyname>${gpg.keyname}</keyname>
 							<passphraseServerId>${gpg.keyname}</passphraseServerId>
 						</configuration>

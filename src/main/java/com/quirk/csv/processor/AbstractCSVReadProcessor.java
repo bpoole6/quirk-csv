@@ -43,14 +43,20 @@ public abstract class AbstractCSVReadProcessor<T> {
         getClasses(parsedClazz, classes);
         csvReadAnnotationManagers.addAll(getHolders(classes));
         if (csv.type() == CSVType.NAMED) {
-            List<String> duplicatedHeaders = this.csvReadAnnotationManagers.stream().collect(Collectors.groupingBy(c -> c.getHeader())).values().stream().filter(l -> l.size() > 1).flatMap(l -> l.stream().map(h -> h.getHeader())).collect(Collectors.toList());
+            List<String> duplicatedHeaders = this.csvReadAnnotationManagers.stream().collect(Collectors
+                    .groupingBy(c -> c.getHeader())).values().stream().filter(l -> l.size() > 1)
+                    .flatMap(l -> l.stream().map(h -> h.getHeader())).collect(Collectors.toList());
             if (duplicatedHeaders.size() > 0) {
-                throw new NamedParserException(String.format("Non Unique Headers in %s. Duplicated Headers: %s", parsedClazz, duplicatedHeaders));
+                throw new NamedParserException(String.format("Non Unique Headers in %s. Duplicated Headers: %s",
+                        parsedClazz, duplicatedHeaders));
             }
         } else if (csv.type() == CSVType.ORDER) {
-            List<Integer> duplicatedOrders = this.csvReadAnnotationManagers.stream().collect(Collectors.groupingBy(c -> c.getOrder())).values().stream().filter(l -> l.size() > 1).flatMap(l -> l.stream().map(h -> h.getOrder())).collect(Collectors.toList());
+            List<Integer> duplicatedOrders = this.csvReadAnnotationManagers.stream().collect(Collectors.groupingBy(c -> c.getOrder()))
+                    .values().stream()
+                    .filter(l -> l.size() > 1).flatMap(l -> l.stream().map(h -> h.getOrder())).collect(Collectors.toList());
             if (duplicatedOrders.size() > 0) {
-                throw new OrderParserException(String.format("Non Unique Order assignment in %s. Duplicated Orders: %s", parsedClazz, duplicatedOrders));
+                throw new OrderParserException(String.format("Non Unique Order assignment in %s. Duplicated Orders: %s",
+                        parsedClazz, duplicatedOrders));
             }
         }
     }

@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to specify how a class should be processed when writing the csv. By either column headers or the order they are found in the file
+ * Used to specify how a class should be processed when writing the csv.
+ * By either column headers or the order they are found in the file
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = { ElementType.TYPE })
@@ -20,7 +21,8 @@ public @interface CSVWriteComponent {
 
 
 	/**
-	 * If {@link CSVType#NAMED} is then setting this to true will order the columns based on the order specified by {@link CSVWriteBinding#order()}
+	 * If {@link CSVType#NAMED} is then setting this to true will order the
+	 * columns based on the order specified by {@link CSVWriteBinding#order()}
 	 */
 	boolean namedIsOrdered() default false;
 

@@ -41,9 +41,11 @@ public abstract class AbstractCSVWriteProcessor<T> {
         getClasses(parsedClazz, classes);
         csvAnnotationManagers.addAll(getHolders(classes));
         CSVWriteComponent component = parsedClazz.getAnnotation(CSVWriteComponent.class);
-        List<Integer> duplicatedOrders = this.csvAnnotationManagers.stream().collect(Collectors.groupingBy(c -> c.getOrder())).values().stream().filter(l -> l.size() > 1).flatMap(l -> l.stream().map(h -> h.getOrder())).distinct().collect(Collectors.toList());
+        List<Integer> duplicatedOrders = this.csvAnnotationManagers.stream().collect(Collectors.groupingBy(c -> c.getOrder())).values().stream().filter(l -> l.size() > 1)
+                .flatMap(l -> l.stream().map(h -> h.getOrder())).distinct().collect(Collectors.toList());
         if (component.type() == CSVType.NAMED) {
-            List<String> duplicatedHeaders = this.csvAnnotationManagers.stream().collect(Collectors.groupingBy(c -> c.getHeader())).values().stream().filter(l -> l.size() > 1).flatMap(l -> l.stream().map(h -> h.getHeader())).distinct().collect(Collectors.toList());
+            List<String> duplicatedHeaders = this.csvAnnotationManagers.stream().collect(Collectors.groupingBy(c -> c.getHeader())).values().stream().filter(l -> l.size() > 1)
+                    .flatMap(l -> l.stream().map(h -> h.getHeader())).distinct().collect(Collectors.toList());
             if (duplicatedHeaders.size() > 0) {
                 throw new NamedParserException(String.format("Non Unique Headers in %s. Duplicated Headers: %s", parsedClazz, duplicatedHeaders));
             }
@@ -77,7 +79,7 @@ public abstract class AbstractCSVWriteProcessor<T> {
      * @param objects
      * @param sw
      * @param format
-     * @throws IOException
+     * @throws IOException da
      */
     protected abstract void write(List<T> objects, StringWriter sw,
                                   CSVFormat format) throws IOException;

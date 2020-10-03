@@ -42,8 +42,13 @@ public class SimpleMain {
     }
 
     static String produceRow() {
-        List<String> lastNames = Arrays.asList("Smith", "Jones", "Johnson", "Lee", "Brown", "Williams", "Rodriguez", "Garcia", "Lopez", "Brooks", "Poole", "Manchester", "Dinkins", "Chang", "Lin");
-        List<String> firstNames = Arrays.asList("John", "David", "Michael", "Chris", "Mike", "Mark", "Paul", "Daniel", "James", "Maria", "Dillian", "Bryan", "Austin", "Ben", "Tim", "Rick", "Taylor", "Matt", "Chris");
+        List<String> lastNames = Arrays.asList("Smith", "Jones", "Johnson", "Lee",
+                "Brown", "Williams", "Rodriguez", "Garcia", "Lopez", "Brooks", "Poole", "Manchester", "Dinkins", "Chang", "Lin");
+
+        List<String> firstNames = Arrays.asList("John", "David", "Michael", "Chris",
+                "Mike", "Mark", "Paul", "Daniel", "James", "Maria", "Dillian", "Bryan",
+                "Austin", "Ben", "Tim", "Rick", "Taylor", "Matt", "Chris");
+
         Random r = new Random();
         String name = String.format("%s %s", firstNames.get(r.nextInt(firstNames.size())), lastNames.get(r.nextInt(lastNames.size())));
         int age = r.nextInt(100) + 1;

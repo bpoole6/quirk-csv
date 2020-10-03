@@ -1,31 +1,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>bpoole6.github.io</groupId>
+	<groupId>io.github.bpoole6</groupId>
 	<artifactId>quirk-csv</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
-	<description>The csv-parser library enables the use of annotation when parsing csvs'. This includes doing it by the order in which the row is read or by headers.</description>
-	<url>https://github.com/bpoole6/CSV-Parser</url>
+	<description>The quirk-csv library enables the use of annotation when parsing csvs'. This includes doing it by the order in which the row is read or by headers.</description>
+	<url>https://github.com/bpoole6/quirk-csv</url>
 	<name>${project.groupId}:{project.artifactId}</name>
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
 		</license>
 	</licenses>
 	<developers>
 		<developer>
-			<id>Austin</id>
+			<id>bpoole6</id>
 			<name>Austin Poole</name>
-			<email>NoneYa@gmail.com</email>
-			<url>https://github.com/bpoole6/CSV-Parser</url>
+			<email>readblip@yahoo.com</email>
+			<url>https://github.com/bpoole6/</url>
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:git:git@github.com:bpoole6/CSV-Parser.git</connection>
-		<developerConnection>scm:git:ssh://github.com:bpoole6/CSV-Parser.git</developerConnection>
-		<url>https://github.com/bpoole6/CSV-Parser/tree/master</url>
+		<connection>scm:git:git@github.com:bpoole6/quirk-csv.git</connection>
+		<developerConnection>scm:git:ssh://github.com:bpoole6/quirk-csv.git</developerConnection>
+		<url>https://github.com/bpoole6/quirk-csv/tree/master</url>
+		<tag>HEAD</tag>
 	</scm>
 	<properties>
 		<checkstyle-maven-plugin.version>3.0.0</checkstyle-maven-plugin.version>
@@ -36,11 +38,6 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.opencsv</groupId>
-			<artifactId>opencsv</artifactId>
-			<version>5.2</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -68,12 +65,73 @@
 	<build>
 		<plugins>
 			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-deploy</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+						<configuration>
+							<keyname>${gpg.keyname}</keyname>
+							<passphraseServerId>${gpg.keyname}</passphraseServerId>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>3.1.0</version>
 				<configuration>
 					<excludePackageNames>com.quirk.csv.test.*:com.quirk.demo.*:com.quirk.csv.wrappers.*</excludePackageNames>
 				</configuration>
+
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>empty-javadoc-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<classifier>javadoc</classifier>
+							<classesDirectory>${basedir}/javadoc</classesDirectory>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>

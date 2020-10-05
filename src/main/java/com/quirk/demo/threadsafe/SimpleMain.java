@@ -9,10 +9,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
-/**
- * This is to show just how fast processing can occur for reading then writing the csv. Granted all this will be in memory.
- * Reading and writing to disk would incur additional time
- */
+
 public class SimpleMain {
     public static void main(String[] args) throws InterruptedException {
         List<Callable<String>> callables = new ArrayList<>();

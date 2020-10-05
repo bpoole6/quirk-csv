@@ -145,10 +145,12 @@ public abstract class AbstractCSVWriteProcessor<T> {
     }
 
     protected <T> void getClasses(Class<T> clazz, List<Class> classes) {
-        classes.add(clazz);
         CSVWriteComponent csv = clazz.getAnnotation(CSVWriteComponent.class);
-        if (csv != null && csv.inheritSuper()) {
-            getClasses(clazz.getSuperclass(), classes);
+        if(csv != null){
+            classes.add(clazz);
+            if (csv.inheritSuper()) {
+                getClasses(clazz.getSuperclass(), classes);
+            }
         }
 
     }

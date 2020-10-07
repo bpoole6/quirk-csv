@@ -48,9 +48,9 @@ class CSVOrderReadProcessor<T> extends AbstractCSVReadProcessor<T> {
                     try {
                         cm.setValue(obj, record.get(order), setValueMap);
                     } catch (IllegalArgumentException e) {
-                        LOGGER.log(Level.SEVERE, "Failed for order#: " + order, e);
+                        LOGGER.log(Level.SEVERE, "Failed for order#: " + order + ". See " + parsedClazz+"#"+cm.generateReference(), e);
                     } catch (InvocationTargetException e) {
-                        LOGGER.log(Level.SEVERE, "Failed for order#: " + order, e);
+                        LOGGER.log(Level.SEVERE, "Failed for order#: " + order+ ". See " + parsedClazz+"#"+cm.generateReference(), e);
                     } catch (ArrayIndexOutOfBoundsException e) {
                         LOGGER.log(Level.WARNING, "Order#: " + order + " exceeds the number of values for the row", e);
                     }

@@ -22,6 +22,7 @@ public class SimpleMain {
 			//Writing
 			StringWriter sw = new StringWriter();
 			processor.write(list,sw);
+			System.out.println(sw);
 
 		} catch (IOException e) {
 		}

@@ -46,7 +46,7 @@ class CSVNamedReadProcessor<T> extends AbstractCSVReadProcessor<T> {
                     try {
                         cm.setValue(obj, record.get(header), setValueMap);
                     } catch (IllegalArgumentException | InvocationTargetException e) {
-                        LOGGER.log(Level.SEVERE, "Failed for header: " + header, e);
+                        LOGGER.log(Level.SEVERE, "Failed for header: " + header+ ". See " + parsedClazz+"#"+cm.generateReference(), e);
                     }
 
                 }

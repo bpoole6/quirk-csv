@@ -109,5 +109,12 @@ class CSVReadAnnotationManager {
 		return header;
 	}
 
+	public String generateReference(){
+		if(method!=null){
+			return method.getName();
+		}else {
+			return field.getName();
+		}
+	}
 
 }

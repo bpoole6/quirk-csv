@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.bpoole6</groupId>
 	<artifactId>quirk-csv</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>jar</packaging>
 	<description>The quirk-csv library enables the use of annotation when parsing csvs'. This includes doing it by the order in which the row is read or by headers.</description>
 	<url>https://github.com/bpoole6/quirk-csv</url>

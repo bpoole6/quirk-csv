@@ -12,7 +12,7 @@ public class Pojo {
     private String name;
 
     @CSVReadBinding(order = 1, wrapper = LocalDateReadWrapper.class)
-    @CSVWriteBinding(order = 0, header = "dob") // Without specifying a wrapper the toString will be called
+    @CSVWriteBinding(order = 1, header = "dob") // Without specifying a wrapper the toString will be called
     private LocalDate dob;
 
     @CSVReadBinding(order = 2)
@@ -25,7 +25,7 @@ public class Pojo {
                 + person.getId();
     }
 
-    @CSVWriteBinding(order = 0, header = "id", wrapper = PersonWriteWrapper.class)
+    @CSVWriteBinding(order = 2, header = "id", wrapper = PersonWriteWrapper.class)
     public Person getPerson() {
         return person;
     }

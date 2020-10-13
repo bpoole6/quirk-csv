@@ -33,7 +33,7 @@
 		<checkstyle-maven-plugin.version>3.0.0</checkstyle-maven-plugin.version>
 		<commons-csv.version>1.6</commons-csv.version>
 		<org.codehaus.mojo.version>2.7</org.codehaus.mojo.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<jacoco.version>0.8.2</jacoco.version>
 	</properties>
 

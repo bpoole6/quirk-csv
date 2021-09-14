@@ -19,12 +19,11 @@ public class SimpleMain {
         }
         String csv = "name,age,money" + System.lineSeparator() + sj.toString();
 
-        CSVProcessor processor = new CSVProcessor(Pojo.class);
-        List<Pojo> list = new ArrayList<>();
+        CSVProcessor<Pojo> processor = new CSVProcessor<>(Pojo.class);
         try {
             System.out.println(((int)(csv.getBytes().length/1024/1024))+" Mb to be processed");
             long startRead = System.currentTimeMillis();
-            list.addAll(processor.parse(new StringReader(csv)));
+            List<Pojo> list = new ArrayList<>(processor.parse(new StringReader(csv)));
 //			list.forEach(System.out::println);
             System.out.println(String.format("Read Time elapse milli: %.3f seconds", (System.currentTimeMillis() - startRead) / 1000.0));
 

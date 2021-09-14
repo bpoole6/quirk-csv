@@ -11,7 +11,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -77,11 +76,11 @@ public abstract class AbstractCSVWriteProcessor<T> {
      * It will skip over the headers and not print them.
      *
      * @param objects
-     * @param sw
+     * @param appendable
      * @param format
      * @throws IOException da
      */
-    protected abstract void write(List<T> objects, StringWriter sw,
+    protected abstract void write(List<T> objects, Appendable appendable,
                                   CSVFormat format) throws IOException;
 
     private List<CSVWriteAnnotationManager> getHolders(List<Class> classes) {
@@ -164,9 +163,9 @@ public abstract class AbstractCSVWriteProcessor<T> {
         }
     }
 
-    protected void doWrite(List<T> objects, StringWriter sw, CSVFormat csvFormat, Logger logger) throws IOException {
+    protected void doWrite(List<T> objects, Appendable appendable, CSVFormat csvFormat, Logger logger) throws IOException {
 
-        try (CSVPrinter printer = new CSVPrinter(sw, csvFormat);) {
+        try (CSVPrinter printer = new CSVPrinter(appendable, csvFormat);) {
             for(T obj : objects){
                 List<String>values = new ArrayList<>();
                 for(CSVWriteAnnotationManager cwm: this.csvAnnotationManagers){

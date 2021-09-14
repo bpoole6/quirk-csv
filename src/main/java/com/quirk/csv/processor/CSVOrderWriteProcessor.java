@@ -24,7 +24,7 @@ class CSVOrderWriteProcessor<T> extends AbstractCSVWriteProcessor<T> {
 	}
 
 	@Override
-	protected void write(List<T> objects, StringWriter sw, CSVFormat format) throws IOException {
+	protected void write(List<T> objects, Appendable sw, CSVFormat format) throws IOException {
 		CSVFormat csvFormat = format.withFirstRecordAsHeader();
 		doWrite(objects,sw,csvFormat,LOGGER);
 	}

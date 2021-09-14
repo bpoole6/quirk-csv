@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -69,8 +70,11 @@ public abstract class AbstractCSVReadProcessor<T> {
         return map;
     }
 
-    protected abstract <T> List<T> read(Reader reader,
+    protected abstract List<T> read(Reader reader,
                                         CSVFormat format) throws IOException;
+
+    protected abstract void process(Reader reader,
+                                        CSVFormat format, Consumer<T> consumer) throws IOException;
 
     private List<CSVReadAnnotationManager> getHolders(List<Class> classes) {
         List<CSVReadAnnotationManager> combined = new ArrayList<>();
@@ -137,7 +141,7 @@ public abstract class AbstractCSVReadProcessor<T> {
         return wrap;
     }
 
-    protected <T> void getClasses(Class<T> clazz, List<Class> classes) {
+    protected <E> void getClasses(Class<E> clazz, List<Class> classes) {
         CSVReadComponent csv = clazz.getAnnotation(CSVReadComponent.class);
         if(csv != null){
             classes.add(clazz);

@@ -14,14 +14,15 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Acts as a further layer of abstraction to determine which processors to use
  */
 @SuppressWarnings("rawtypes")
 public class CSVProcessor<T> {
-    private AbstractCSVReadProcessor readProcessor;
-    private AbstractCSVWriteProcessor writeProcessor;
+    private AbstractCSVReadProcessor<T> readProcessor;
+    private AbstractCSVWriteProcessor<T> writeProcessor;
 
     public List<T> parse(Reader reader) throws IOException {
         missingReadComponent();
@@ -32,13 +33,22 @@ public class CSVProcessor<T> {
         return readProcessor.read(reader, format);
     }
 
-    public void write(List<T>objects, StringWriter sw, CSVFormat csvFormat) throws IOException {
-        missingWriteComponent();
-        writeProcessor.write(objects, sw,csvFormat);
+    public void process(Reader reader, Consumer<T> consumer) throws IOException {
+        missingReadComponent();
+        readProcessor.process(reader, CSVFormat.DEFAULT, consumer);
     }
-    public void write(List<T>objects, StringWriter sw) throws IOException {
+    public void process(Reader reader,  CSVFormat format, Consumer<T> consumer) throws IOException {
+        missingReadComponent();
+        readProcessor.process(reader, format, consumer);
+    }
+
+    public void write(List<T>objects, Appendable appendable, CSVFormat csvFormat) throws IOException {
         missingWriteComponent();
-        writeProcessor.write(objects, sw,CSVFormat.DEFAULT);
+        writeProcessor.write(objects, appendable,csvFormat);
+    }
+    public void write(List<T>objects, Appendable appendable) throws IOException {
+        missingWriteComponent();
+        writeProcessor.write(objects, appendable,CSVFormat.DEFAULT);
     }
 
     public CSVProcessor(Class<T> clazz) {

@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class SimpleMain {
     public static void main(String[] args) throws InterruptedException {
         List<Callable<String>> callables = new ArrayList<>();
-        CSVProcessor processor = new CSVProcessor(Pojo.class);
+        CSVProcessor<Pojo> processor = new CSVProcessor<>(Pojo.class);
         String header = "name,age,money";
         IntStream.range(0,4).forEach(i -> {
             StringJoiner sj = new StringJoiner(System.lineSeparator());

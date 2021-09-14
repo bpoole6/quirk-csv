@@ -11,7 +11,7 @@ import java.util.List;
 public class SimpleMain {
 	public static void main(String[] args) throws NoSuchMethodException, IOException {
 		final String csv = "Marvin Nowell|34|20000.32|USA" + System.lineSeparator() + "Dillian Lamour|22|2499|France";
-		CSVProcessor<PojoChild> processor = new CSVProcessor(PojoChild.class);
+		CSVProcessor<PojoChild> processor = new CSVProcessor<>(PojoChild.class);
 		try {
 			//Reading
 			CSVFormat format = CSVFormat.DEFAULT.withDelimiter('|');

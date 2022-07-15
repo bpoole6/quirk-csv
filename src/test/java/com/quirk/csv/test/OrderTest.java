@@ -16,10 +16,12 @@ import static org.junit.Assert.assertTrue;
 
 public class OrderTest {
 
+	private final static String LINE_SEPARATOR = "\r\n";
+
 	@Test()
 	public void positiveOrderTest() throws IOException {
 		CSVProcessor<O1> p = new CSVProcessor<>(O1.class);
-		String csv = "a,0,NAMED,d,0"+System.lineSeparator();
+		String csv = "a,0,NAMED,d,0"+LINE_SEPARATOR;
 		List<O1> o1s = p.parse(new StringReader(csv));
 		O1 o1 = new O1();
 		o1.s = "a";

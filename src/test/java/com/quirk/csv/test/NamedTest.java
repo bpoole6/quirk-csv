@@ -17,12 +17,13 @@ import static org.junit.Assert.assertTrue;
 
 public class NamedTest {
 	
+	private final static String LINE_SEPARATOR = "\r\n";
 
 	@Test()
 	public void NumberFormatExTest() throws IOException {
 
 		CSVProcessor<O1> p = new CSVProcessor<>(O1.class);
-		String csv = "a,b,c" + System.lineSeparator() + "a,0,1"+System.lineSeparator();
+		String csv = "a,b,c" + LINE_SEPARATOR + "a,0,1"+LINE_SEPARATOR;
 		List<O1> o1s = p.parse(new StringReader(csv));
 		O1 o1 = new O1();
 		o1.s = "a";
@@ -39,14 +40,14 @@ public class NamedTest {
 	public void readUninstantiableExTest() throws IOException {
 
 		CSVProcessor<O2> p = new CSVProcessor<>(O2.class);
-		List<O2> o2 = p.parse(new StringReader("a,b,c" + System.lineSeparator() + "a,j,u"));
+		List<O2> o2 = p.parse(new StringReader("a,b,c" + LINE_SEPARATOR + "a,j,u"));
 
 	}
 	@Test(expected = NamedParserException.class)
 	public void readNamedParserExceptionTest() throws IOException {
 
 		CSVProcessor<O3> p = new CSVProcessor<>(O3.class);
-		 p.parse(new StringReader("a,b,c" + System.lineSeparator() + "a,j,u"));
+		 p.parse(new StringReader("a,b,c" + LINE_SEPARATOR + "a,j,u"));
 	}
 
 

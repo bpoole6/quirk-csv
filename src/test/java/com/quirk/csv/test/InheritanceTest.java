@@ -13,10 +13,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class InheritanceTest {
+	private final static String LINE_SEPARATOR = "\r\n";
 
 	@Test
 	public void orderTest() throws IOException {
-		final String str = "1,sts"+System.lineSeparator();
+		final String str = "1,sts"+LINE_SEPARATOR;
 		ChildO1 o = new ChildO1();
 		o.a = 1;
 		o.b = "sts";
@@ -31,7 +32,7 @@ public class InheritanceTest {
 
 	@Test
 	public void namedTest() throws IOException {
-		final String str = "a,b" + System.lineSeparator() + "1,sts"+System.lineSeparator();
+		final String str = "a,b" + LINE_SEPARATOR + "1,sts"+LINE_SEPARATOR;
 		ChildN1 o = new ChildN1();
 		o.a = 1;
 		o.b = "sts";

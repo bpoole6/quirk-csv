@@ -49,7 +49,7 @@ class CSVNamedReadProcessor<T> extends AbstractCSVReadProcessor<T> {
             while(iterator.hasNext()){
                 consumer.accept(getCSVRecord(iterator,map));
             }
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
             LOGGER.log(Level.SEVERE,
                     "Could not create object. Check to make sure the you have a visible default constructor", e);
             throw new UninstantiableException(
@@ -57,10 +57,10 @@ class CSVNamedReadProcessor<T> extends AbstractCSVReadProcessor<T> {
         }
     }
 
-    private T getCSVRecord(Iterator<CSVRecord> iterator, Map<String, CSVReadAnnotationManager> map) throws InstantiationException, IllegalAccessException {
+    private T getCSVRecord(Iterator<CSVRecord> iterator, Map<String, CSVReadAnnotationManager> map) throws ReflectiveOperationException {
         CSVRecord record = iterator.next();
 
-        Object obj = parsedClazz.newInstance();
+        T obj = parsedClazz.getDeclaredConstructor().newInstance();
         for (Entry<String, CSVReadAnnotationManager> entry : map.entrySet()) {
             CSVReadAnnotationManager cm = entry.getValue();
             String header = entry.getKey();
@@ -71,6 +71,6 @@ class CSVNamedReadProcessor<T> extends AbstractCSVReadProcessor<T> {
             }
 
         }
-        return(T) obj;
+        return obj;
     }
 }

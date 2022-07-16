@@ -130,11 +130,11 @@ public abstract class AbstractCSVWriteProcessor<T> {
         WriteWrapper wrap = this.wrapperInstantiated.get(wrapper);
         if (wrap == null) {
             try {
-                wrap = wrapper.newInstance();
+                wrap = wrapper.getDeclaredConstructor().newInstance();
                 this.wrapperInstantiated.put((Class<WriteWrapper>) wrapper, wrap);
 
                 return wrap;
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (ReflectiveOperationException e) {
                 LOGGER.log(Level.SEVERE, "Make sure your WriteWrapper class has a public no args constructor", e);
                 throw new WrapperInstantiationException("WriteWrapper class does not have public no args constructor");
             }

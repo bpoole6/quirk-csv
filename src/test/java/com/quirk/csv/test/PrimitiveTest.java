@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -35,7 +36,8 @@ public class PrimitiveTest {
 		p.booleanS = true;
 		p.stringW = "stringLife";
 		p.type = CSVType.NAMED;
-		final String str = "1,1,2,2,c,c,4,4,6,6,5.4,5.4,5.4,5.4,true,true,stringLife,NAMED";
+		p.bigDecimalW = new BigDecimal("1.23456");
+		final String str = "1,1,2,2,c,c,4,4,6,6,5.4,5.4,5.4,5.4,true,true,stringLife,NAMED,1.23456";
 		CSVProcessor processor = new CSVProcessor(Primitive.class);
 		List<Primitive> list = processor.parse(new StringReader(str));
 		System.out.println(list);
@@ -85,6 +87,9 @@ public class PrimitiveTest {
 			this.type = type;
 		}
 
+		@CSVReadBinding(order = 18)
+		BigDecimal bigDecimalW;
+
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -109,6 +114,7 @@ public class PrimitiveTest {
 			result = prime * result + ((shortW == null) ? 0 : shortW.hashCode());
 			result = prime * result + ((stringW == null) ? 0 : stringW.hashCode());
 			result = prime * result + ((type == null) ? 0 : type.hashCode());
+			result = prime * result + ((bigDecimalW == null) ? 0 : bigDecimalW.hashCode());
 			return result;
 		}
 
@@ -183,6 +189,11 @@ public class PrimitiveTest {
 			} else if (!stringW.equals(other.stringW))
 				return false;
 			if (type != other.type)
+				return false;
+			if (bigDecimalW == null) {
+				if (other.bigDecimalW != null)
+					return false;
+			} else if (bigDecimalW.compareTo(other.bigDecimalW) != 0)
 				return false;
 			return true;
 		}

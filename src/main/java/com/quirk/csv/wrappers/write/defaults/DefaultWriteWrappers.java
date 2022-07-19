@@ -2,6 +2,7 @@ package com.quirk.csv.wrappers.write.defaults;
 
 import com.quirk.csv.wrappers.write.WriteWrapper;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -30,6 +31,7 @@ public class DefaultWriteWrappers {
 		map.put(Boolean.class, new BooleanDefault());
 		map.put(boolean.class, new BooleanDefault());
 		map.put(String.class, new StringDefault());
+		map.put(BigDecimal.class, new BigDecimalDefault());
 		return map;
 	}
 
@@ -167,5 +169,19 @@ public class DefaultWriteWrappers {
 			return obj.toString();
 		}
 
+	}
+
+	/**
+	 * Default implementation for {@link java.math.BigDecimal}
+	 */
+	public static class BigDecimalDefault implements WriteWrapper<BigDecimal> {
+
+		@Override
+		public String apply(BigDecimal obj) {
+			if(Objects.isNull(obj)){
+				return "";
+			}
+			return obj.toString();
+		}
 	}
 }

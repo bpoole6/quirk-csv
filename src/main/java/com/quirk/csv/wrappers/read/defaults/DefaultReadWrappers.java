@@ -2,6 +2,7 @@ package com.quirk.csv.wrappers.read.defaults;
 
 import com.quirk.csv.wrappers.read.ReadWrapper;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ public class DefaultReadWrappers {
 		map.put(Boolean.class, new BooleanDefault());
 		map.put(boolean.class, new BooleanDefault());
 		map.put(String.class, new StringDefault());
+		map.put(BigDecimal.class, new BigDecimalDefault());
 		return map;
 	}
 
@@ -138,6 +140,20 @@ public class DefaultReadWrappers {
 		@Override
 		public String apply(String str) {
 			return str;
+		}
+	}
+
+	/**
+	 * Default implementation for {@link java.math.BigDecimal}
+	 */
+	public static class BigDecimalDefault implements ReadWrapper<BigDecimal> {
+
+		@Override
+		public BigDecimal apply(String str) {
+			if(str == null) return null;
+			str = str.trim();
+			if(str.isEmpty()) return null;
+			return new BigDecimal(str);
 		}
 	}
 }

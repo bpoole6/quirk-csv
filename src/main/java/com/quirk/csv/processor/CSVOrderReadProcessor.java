@@ -49,7 +49,7 @@ class CSVOrderReadProcessor<T> extends AbstractCSVReadProcessor<T> {
         try (CSVParser parser = new CSVParser(reader, format);) {
             Iterator<CSVRecord> iterator = parser.iterator();
             while (iterator.hasNext()){
-                consumer.accept(getCSVRecord(iterator, map));
+                consumer.accept(getCSVRecord(iterator.next(), map));
             }
 
         } catch (InstantiationException | IllegalAccessException e) {
@@ -60,9 +60,8 @@ class CSVOrderReadProcessor<T> extends AbstractCSVReadProcessor<T> {
         }
     }
 
-    private T getCSVRecord(Iterator<CSVRecord> iterator, Map<Integer, CSVReadAnnotationManager> map) throws InstantiationException, IllegalAccessException {
-        CSVRecord record = iterator.next();
-        Object obj = parsedClazz.newInstance();
+    protected T getCSVRecord(CSVRecord record, Map<Integer, CSVReadAnnotationManager> map) throws InstantiationException, IllegalAccessException {
+        T obj = parsedClazz.newInstance();
         for (Entry<Integer, CSVReadAnnotationManager> entry : map.entrySet()) {
             CSVReadAnnotationManager cm = entry.getValue();
             int order = entry.getKey();
@@ -78,6 +77,6 @@ class CSVOrderReadProcessor<T> extends AbstractCSVReadProcessor<T> {
             }
 
         }
-        return (T) obj;
+        return obj;
     }
 }

@@ -35,6 +35,7 @@
 		<org.codehaus.mojo.version>2.7</org.codehaus.mojo.version>
 		<junit.version>4.13.1</junit.version>
 		<jacoco.version>0.8.2</jacoco.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
